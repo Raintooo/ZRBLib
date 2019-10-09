@@ -14,10 +14,12 @@ protected:
     List& operator = (const List& e);
 public:
     List() {};
+    virtual bool insert(const T& e) = 0;
     virtual bool insert(int index, const T& e) = 0;
     virtual bool remove(int index) = 0;
     virtual bool set(int index, const T& e) = 0;
     virtual bool get(int index, T& e) const = 0;
+    virtual int find(const T& e) const = 0;
     virtual int length() = 0;
     virtual void clear() = 0;
 };

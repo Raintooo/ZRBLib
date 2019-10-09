@@ -14,10 +14,12 @@ protected:
     T* m_array;
     int m_length;
 public:
+    bool insert(const T& e);
     bool insert(int index, const T& e);
     bool remove(int index);
     bool set(int index, const T& e);
     bool get(int index, T& e) const;
+    int find(const T& e) const;
     int length();
     void clear();
 
@@ -43,6 +45,12 @@ bool SeqList<T>::insert(int index, const T& e)
         m_length++;
     }
     return bRet;
+}
+
+template <typename T>
+bool SeqList<T>::insert(const T& e)
+{
+    return insert(m_length, e);
 }
 
 template <typename T>
@@ -84,6 +92,21 @@ bool SeqList<T>::get(int index, T& e) const
         e = m_array[index];
     }
     return bRet;
+}
+
+template <typename T>
+int SeqList<T>::find(const T& e) const
+{
+    int ret = -1;
+    for(int i = 0; i < m_length; i++)
+    {
+        if(e == m_array[i])
+        {
+            ret = i;
+            break;
+        }
+    }
+    return ret;
 }
 
 template <typename T>

@@ -11,24 +11,36 @@
 using namespace std;
 using namespace ZRBLib;
 
-class Test
+class Test : public Object
 {
+int i;
 public:
-    Test()
+    Test(int a = 0)
     {
-        throw 0;
+        i = a;
+    }
+    bool operator == (const Test& e)
+    {
+        return (i == e.i);
     }
 };
 
 int main()
 {
-    LinkList<Test> ll;
-    LinkList<int> l;
+    LinkList<Test> l;
+    Test t1(1);
+    Test t2(2);
+    Test t3(3);
 
+    l.insert(t1);
+    l.insert(t2);
+    l.insert(t3);
+
+    cout<< l.find(t2)<< endl;
 /*
     for(int i = 0; i < 5; i++)
     {
-        l.insert(i, i);
+        l.insert(0, i);
     }
 
     for(int i = 0; i < l.length(); i++)
@@ -37,11 +49,7 @@ int main()
     }
     cout<< "------------"<< endl;
 
-    l.remove(0);
-    for(int i = 0; i < l.length(); i++)
-    {
-        cout<< l.get(i)<< endl;
-    }
+    cout<< l.find(-3)<< endl;
 */
     return 0;
 }

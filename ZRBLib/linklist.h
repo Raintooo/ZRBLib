@@ -39,10 +39,12 @@ protected:
     }
 public:
     LinkList();
+    bool insert(const T& e);
     bool insert(int index, const T& e);
     bool remove(int index);
     bool set(int index, const T& e);
     bool get(int index, T& e) const;
+    int find(const T& e) const;
     T get(int index);
     int length();
     void clear();
@@ -82,6 +84,12 @@ bool LinkList<T>::insert(int index, const T& e)
     }
 
     return bRet;
+}
+
+template <typename T>
+bool LinkList<T>::insert(const T& e)
+{
+    return insert(m_length, e);
 }
 
 template <typename T>
@@ -129,6 +137,26 @@ bool LinkList<T>::get(int index, T& e) const
     }
 
     return bRet;
+}
+
+template <typename T>
+int LinkList<T>::find(const T& e) const
+{
+    int index = 0;
+    int ret = -1;
+    Node* node = m_header.next;
+    while(node != NULL)
+    {
+        if(node->value == e)
+        {
+            ret = index;
+            break;
+        }
+        index++;
+        node = node->next;
+    }
+
+    return ret;
 }
 
 template <typename T>
