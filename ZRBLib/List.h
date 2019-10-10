@@ -13,7 +13,7 @@ protected:
     List(const List& e);
     List& operator = (const List& e);
 public:
-    List() {};
+    List() { }
     virtual bool insert(const T& e) = 0;
     virtual bool insert(int index, const T& e) = 0;
     virtual bool remove(int index) = 0;

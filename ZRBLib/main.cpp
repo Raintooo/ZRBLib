@@ -27,30 +27,21 @@ public:
 
 int main()
 {
-    LinkList<Test> l;
-    Test t1(1);
-    Test t2(2);
-    Test t3(3);
+    LinkList<int> l;
 
-    l.insert(t1);
-    l.insert(t2);
-    l.insert(t3);
-
-    cout<< l.find(t2)<< endl;
-/*
     for(int i = 0; i < 5; i++)
     {
         l.insert(0, i);
     }
-
-    for(int i = 0; i < l.length(); i++)
+    for(l.move(0, 2); !l.end(); l.next())
     {
-        cout<< l.get(i)<< endl;
+        cout<< l.current()<< endl;
     }
+
     cout<< "------------"<< endl;
 
-    cout<< l.find(-3)<< endl;
-*/
+
+
     return 0;
 }
 
