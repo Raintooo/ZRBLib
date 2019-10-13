@@ -7,6 +7,7 @@
 #include "StaticArray.h"
 #include "DynamicArray.h"
 #include "linklist.h"
+#include "StaticLinkList.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -17,6 +18,7 @@ int i;
 public:
     Test(int a = 0)
     {
+        cout<< "new Test"<< endl;
         i = a;
     }
     bool operator == (const Test& e)
@@ -27,13 +29,16 @@ public:
 
 int main()
 {
-    LinkList<int> l;
+    StaticLinkList<int, 5> l;
 
     for(int i = 0; i < 5; i++)
     {
         l.insert(0, i);
     }
-    for(l.move(0, 2); !l.end(); l.next())
+
+    l.remove(2);
+
+    for(l.move(0, 1); !l.end(); l.next())
     {
         cout<< l.current()<< endl;
     }

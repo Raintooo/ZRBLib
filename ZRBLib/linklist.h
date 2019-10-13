@@ -121,8 +121,12 @@ bool LinkList<T>::remove(int index)
     if(bRet)
     {
         Node* cur = SearchNode(index);
-
         Node* toDel = cur->next;
+
+        if(m_current == toDel)      //todo:这里加个判断是因为假如调用 remove 后再调用 current() 此时 m_current指针指向已经删除的节点，会输出错误数据,
+        {
+            m_current = toDel->next;
+        }
         cur->next = toDel->next;    //cur->next->next;
 
         m_length--;
@@ -209,10 +213,9 @@ void LinkList<T>::clear()
     {
         Node* toDel = m_header.next;
         m_header.next = toDel->next;
-       // m_length--;
-       destory(toDel);
+        m_length--;
+        destory(toDel);
     }
-    m_length = 0;
 }
 
 template <typename T>

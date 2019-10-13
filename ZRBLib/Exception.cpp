@@ -6,17 +6,19 @@ namespace ZRBLib
 {
 void Exception::init(const char* message, const char* file, int line)
 {
-    m_message = strdup(message);
-
-    m_location = static_cast<char*>(malloc(strlen(message) +strlen(file) + 2));
-    if(m_location != NULL)
+    m_message = message != NULL ? strdup(message) : NULL;
+    if(file != NULL)
     {
         char strline[10] = {0};
         itoa(line, strline, 10);
 
-        m_location = strcat(m_location, file);
-        m_location = strcat(m_location, ":");
-        m_location = strcat(m_location, strline);
+        m_location = static_cast<char*>(malloc(strlen(strline) +strlen(file) + 2));
+        if(m_location != NULL)
+        {
+            m_location = strcat(m_location, file);
+            m_location = strcat(m_location, ":");
+            m_location = strcat(m_location, strline);
+        }
     }
     else
     {

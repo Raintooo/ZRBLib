@@ -78,7 +78,7 @@ void DynamicArray<T>::init(T* array, int len)
 }
 
 template <typename T>
-DynamicArray<T>::DynamicArray(int len)
+DynamicArray<T>::DynamicArray(int len = 0)
 {
     init(new T[len], len);
 }
