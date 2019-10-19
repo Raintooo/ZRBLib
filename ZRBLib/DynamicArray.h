@@ -17,7 +17,7 @@ protected:
     void update(T* array, int len);
     void init(T* array, int len);
 public:
-    DynamicArray(int len);
+    DynamicArray(int len = 0);
     DynamicArray(const DynamicArray<T>& obj);
     DynamicArray<T>& operator = (const DynamicArray<T>& obj);
 
@@ -78,7 +78,7 @@ void DynamicArray<T>::init(T* array, int len)
 }
 
 template <typename T>
-DynamicArray<T>::DynamicArray(int len = 0)
+DynamicArray<T>::DynamicArray(int len)
 {
     init(new T[len], len);
 }
