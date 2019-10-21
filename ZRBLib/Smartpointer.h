@@ -1,81 +1,52 @@
 ﻿#ifndef SMARTPOINTER_H
 #define SMARTPOINTER_H
 
-#include "Object.h"
+#include "Pointer.h"
 
 namespace ZRBLib
 {
 
 template<typename T>
-class SmartPointer : public Object
+class SmartPointer : public Pointer<T>
 {
-protected:
-    T* mp;
 public:
     SmartPointer(T* p = NULL);
     SmartPointer(const SmartPointer<T>& obj);
     SmartPointer& operator = (const SmartPointer<T>& obj);
-    T* operator -> ();
-    T& operator * ();
-    T* get();
-    bool isNULL();
     virtual ~SmartPointer();
 };
 
 template<typename T>
-SmartPointer<T>::SmartPointer(T* p)
+SmartPointer<T>::SmartPointer(T* p) : Pointer<T>(p)
 {
-    mp = p;
 }
 
 template<typename T>
 SmartPointer<T>::SmartPointer(const SmartPointer<T>& obj)
 {
-    mp = obj.mp;
-    const_cast<SmartPointer<T>&>(obj).mp = NULL;
+    this->m_pointer = obj.m_pointer;
+    const_cast<SmartPointer<T>&>(obj).m_pointer = NULL;
 }
 
 template<typename T>
 SmartPointer<T>& SmartPointer<T>::operator = (const SmartPointer<T>& obj)
 {
-    if(mp != obj.mp)
+    if(this->m_pointer != obj.m_pointer)
     {
-        delete mp;
-        mp = obj.mp;
-        const_cast<SmartPointer<T>&>(obj).mp = NULL;
+        T* tmp = this->m_pointer;
+        this->m_pointer = obj.m_pointer;
+        const_cast<SmartPointer<T>&>(obj).m_pointer = NULL;
+
+        delete tmp;
     }
 
     return *this;
 }
 
 template<typename T>
-T* SmartPointer<T>::operator -> ()
-{
-    return mp;
-}
-
-template<typename T>
-T& SmartPointer<T>::operator * ()
-{
-    return *mp;
-}
-
-template<typename T>
-T* SmartPointer<T>::get()
-{
-    return mp;
-}
-
-template<typename T>
-bool SmartPointer<T>::isNULL()
-{
-    return (mp == NULL);
-}
-
-template<typename T>
 SmartPointer<T>::~SmartPointer()
 {
-    delete mp;
+    delete this->m_pointer;
 }
 
 

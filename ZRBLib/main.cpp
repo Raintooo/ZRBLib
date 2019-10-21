@@ -8,6 +8,7 @@
 #include "DynamicArray.h"
 #include "linklist.h"
 #include "StaticLinkList.h"
+#include "SharePointer.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -16,34 +17,36 @@ class Test : public Object
 {
 int i;
 public:
-    Test(int a = 0)
+    int value;
+    Test() : value(1)
     {
         cout<< "new Test"<< endl;
-        i = a;
     }
-    bool operator == (const Test& e)
+    ~Test()
     {
-        return (i == e.i);
+        cout<< "new ~Test"<< endl;
     }
+
 };
 
 int main()
 {
-    StaticLinkList<int, 5> l;
 
-    for(int i = 0; i < 5; i++)
-    {
-        l.insert(0, i);
-    }
+   // SharePointer<Test> l = new Test();
+    SharePointer<Test> l = new Test();
+    SharePointer<Test> l1 = l;
+    SharePointer<Test> l2 = NULL;
 
-    l.remove(2);
+    l2 = l1;
 
-    for(l.move(0, 1); !l.end(); l.next())
-    {
-        cout<< l.current()<< endl;
-    }
+    cout<<l->value << endl;
+    cout<<l1->value << endl;
+    cout<<l2->value << endl;
+
 
     cout<< "------------"<< endl;
+
+    if(l == l1)
 
 
 
