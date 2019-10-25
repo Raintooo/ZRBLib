@@ -9,47 +9,59 @@
 #include "linklist.h"
 #include "StaticLinkList.h"
 #include "SharePointer.h"
+#include "CircleList.h"
+#include "DualLinkList.h"
 
 using namespace std;
 using namespace ZRBLib;
 
-class Test : public Object
+void josep(int num, int pos, int step)
 {
-int i;
-public:
-    int value;
-    Test() : value(1)
+    CircleList<int> c;
+
+    for(int i = 1; i <= num; i++)
     {
-        cout<< "new Test"<< endl;
-    }
-    ~Test()
-    {
-        cout<< "new ~Test"<< endl;
+        c.insert(i);
     }
 
-};
+  //  cout<< c.test()<<endl;
+
+}
 
 int main()
 {
 
-   // SharePointer<Test> l = new Test();
-    SharePointer<Test> l = new Test();
-    SharePointer<Test> l1 = l;
-    SharePointer<Test> l2 = NULL;
+    DualLinkList<int> t;
 
-    l2 = l1;
+    for(int i = 0; i < 5; i++)
+    {
+        t.insert(0, i);
+        t.insert(0, 5);
+    }
 
-    cout<<l->value << endl;
-    cout<<l1->value << endl;
-    cout<<l2->value << endl;
+    for(int i = 0; i < t.length(); i++)
+    {
+        cout<< t.get(i)<< endl;
+    }
 
+    cout<< "-------------------"<< endl;
 
-    cout<< "------------"<< endl;
+    cout<< "-------------------"<< endl;
+    t.move(t.length()-1);
+    while(!t.end())
+    {
+        if(t.current() == 5)
+        {
+            cout<< t.current()<< endl;
+            t.remove(t.find(t.current()));
+        }
+        else
+        {
+            t.pre();
+        }
 
-    if(l == l1)
-
-
-
+    }
+    cout<< "-------------------"<< endl;
     return 0;
 }
 

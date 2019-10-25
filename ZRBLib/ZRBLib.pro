@@ -21,5 +21,7 @@ HEADERS += \
     LinkList.h \
     StaticLinkList.h \
     Pointer.h \
-    SharePointer.h
+    SharePointer.h \
+    CircleList.h \
+    DualLinkList.h
 

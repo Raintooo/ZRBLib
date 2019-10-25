@@ -1,20 +1,20 @@
-﻿#ifndef LINKLIST_H
-#define LINKLIST_H
+﻿#ifndef DUALLINKLIST_H
+#define DUALLINKLIST_H
 
 #include "List.h"
-#include "Exception.h"
 
 namespace ZRBLib
 {
 
 template <typename T>
-class LinkList : public List<T>
+class DualLinkList : public List<T>
 {
 protected:
     struct Node : public Object
     {
         T value;
         Node* next;
+        Node* pre;
     };
 
     /*定义为结构体 是避免泛指类型为类类型时候 不触发构造函数
@@ -24,6 +24,7 @@ protected:
     {
         char reserved[sizeof(T)];   //内存大小对齐
         Node* next;
+        Node* pre;
     } m_header;     //Mutable 可让该成员变量在const 函数可修改
 
 
@@ -52,7 +53,7 @@ protected:
     Node* m_current;
 
 public:
-    LinkList();
+    DualLinkList();
     bool insert(const T& e);
     bool insert(int index, const T& e);
     bool remove(int index);
@@ -67,23 +68,25 @@ public:
     virtual bool move(int index, int step = 1);     //step参数用于表示每次移动多少个元素
     T current();
     virtual bool end();
-    bool next();
+    virtual bool next();
+    virtual bool pre();
 
-    ~LinkList();
+    ~DualLinkList();
 
 };
 
 template <typename T>
-LinkList<T>::LinkList()
+ DualLinkList<T>::DualLinkList()
 {
     m_header.next = NULL;
+    m_header.pre = NULL;
     m_length = 0;
     m_step = 1;
     m_current = NULL;
 }
 
 template <typename T>
-bool LinkList<T>::insert(int index, const T& e)
+bool  DualLinkList<T>::insert(int index, const T& e)
 {
     bool bRet = (index >= 0) && (index <= m_length);
     if(bRet)
@@ -92,10 +95,26 @@ bool LinkList<T>::insert(int index, const T& e)
         if(node != NULL)
         {
             Node* cur = position(index);
+            Node* next = cur->next;
 
             node->value = e;
-            node->next = cur->next;
+
             cur->next = node;
+
+            if(cur != reinterpret_cast<Node*>(&m_header))
+                node->pre = cur;
+            else
+                node->pre = NULL;
+
+            if(next != NULL)
+            {
+                node->next = next;
+                next->pre = node;
+            }
+            else
+            {
+                node->next = NULL;
+            }
 
             m_length++;
         }
@@ -109,25 +128,32 @@ bool LinkList<T>::insert(int index, const T& e)
 }
 
 template <typename T>
-bool LinkList<T>::insert(const T& e)
+bool  DualLinkList<T>::insert(const T& e)
 {
     return insert(m_length, e);
 }
 
 template <typename T>
-bool LinkList<T>::remove(int index)
+bool  DualLinkList<T>::remove(int index)
 {
     bool bRet = (index >= 0) && (index <= m_length);
     if(bRet)
     {
         Node* cur = position(index);
         Node* toDel = cur->next;
+        Node* next = toDel->next;
 
         if(m_current == toDel)      //todo:这里加个判断是因为假如调用 remove 后再调用 current() 此时 m_current指针指向已经删除的节点，会输出错误数据,
         {
             m_current = toDel->next;
         }
-        cur->next = toDel->next;    //cur->next->next;
+
+        cur->next = next;    //cur->next->next;
+
+        if(next != NULL)
+        {
+            next->pre = cur;
+        }
 
         m_length--;
         destory(toDel);
@@ -136,7 +162,7 @@ bool LinkList<T>::remove(int index)
 }
 
 template <typename T>
-bool LinkList<T>::set(int index, const T& e)
+bool  DualLinkList<T>::set(int index, const T& e)
 {
     bool bRet = (index >= 0) && (index < m_length);
     if(bRet)
@@ -150,7 +176,7 @@ bool LinkList<T>::set(int index, const T& e)
 }
 
 template <typename T>
-bool LinkList<T>::get(int index, T& e) const
+bool  DualLinkList<T>::get(int index, T& e) const
 {
     bool bRet = (index >= 0) && (index < m_length);
     if(bRet)
@@ -164,7 +190,7 @@ bool LinkList<T>::get(int index, T& e) const
 }
 
 template <typename T>
-int LinkList<T>::find(const T& e) const
+int  DualLinkList<T>::find(const T& e) const
 {
     int index = 0;
     int ret = -1;
@@ -184,7 +210,7 @@ int LinkList<T>::find(const T& e) const
 }
 
 template <typename T>
-T LinkList<T>::get(int index) const
+T  DualLinkList<T>::get(int index) const
 {
     T tRet;
     if(get(index, tRet))
@@ -200,16 +226,18 @@ T LinkList<T>::get(int index) const
 }
 
 template <typename T>
-int LinkList<T>::length()
+int  DualLinkList<T>::length()
 {
     return m_length;
 }
 
 
 template <typename T>
-void LinkList<T>::clear()
+void  DualLinkList<T>::clear()
 {
-    while(m_header.next != NULL)
+    while(m_length > 1)
+        remove(1);
+    if(m_length == 1)
     {
         Node* toDel = m_header.next;
         m_header.next = toDel->next;
@@ -219,7 +247,7 @@ void LinkList<T>::clear()
 }
 
 template <typename T>
-bool LinkList<T>::move(int index, int step)
+bool  DualLinkList<T>::move(int index, int step)
 {
     bool ret = (index >= 0) && (index < m_length) && (step > 0);
     if(ret)
@@ -232,13 +260,13 @@ bool LinkList<T>::move(int index, int step)
 
 
 template <typename T>
-bool LinkList<T>::end()
+bool  DualLinkList<T>::end()
 {
     return (m_current == NULL);
 }
 
 template <typename T>
-bool LinkList<T>::next()
+bool  DualLinkList<T>::next()
 {
     int i = 0;
     while((i < m_step) && !end())
@@ -251,7 +279,20 @@ bool LinkList<T>::next()
 }
 
 template <typename T>
-T LinkList<T>::current()
+bool  DualLinkList<T>::pre()
+{
+    int i = 0;
+    while((i < m_step) && !end())
+    {
+        m_current = m_current->pre;
+        i++;
+    }
+
+    return (i == m_step);
+}
+
+template <typename T>
+T  DualLinkList<T>::current()
 {
     if(m_current != NULL)
     {
@@ -264,12 +305,11 @@ T LinkList<T>::current()
 }
 
 template <typename T>
-LinkList<T>::~LinkList()
+ DualLinkList<T>::~ DualLinkList()
 {
     clear();
 }
 
 }
 
-
-#endif // LINKLIST_H
+#endif // DUAL DualLinkList_H
