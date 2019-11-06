@@ -56,7 +56,7 @@ T& Array<T>::operator [](int index)
 }
 
 template <typename T>
-T Array<T>::operator [](int index) const
+T Array<T>::operator [](int index) const    //const 返回对象值 一般用于右值 值是一般不能变
 {
     return const_cast<Array<T>&>(*this)[index];
 }
