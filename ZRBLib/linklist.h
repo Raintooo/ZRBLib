@@ -60,7 +60,7 @@ public:
     bool get(int index, T& e) const;
     int find(const T& e) const;
     virtual T get(int index) const;
-    int length();
+    int length() const;
     void clear();
 
     //链表遍历相关
@@ -200,7 +200,7 @@ T LinkList<T>::get(int index) const
 }
 
 template <typename T>
-int LinkList<T>::length()
+int LinkList<T>::length() const
 {
     return m_length;
 }
