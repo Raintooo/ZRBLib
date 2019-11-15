@@ -243,7 +243,7 @@ int main()
 //    Queen<8> q;
 //    q.run();
     int array[6] = {24, 25, 49, 25, 16, 8};
-    Sort::Shell(array, 6);
+    Sort::Merge(array, 6);
 
     for(int i = 0; i < 6; i++)
     {
