@@ -14,6 +14,8 @@ protected:
 
     void init(const char* s);
     bool equal(const char* l, const char* r, int len) const;
+    int* get_pmt(const char* p) const;
+    int kmp(const char* s, const char* p) const;
 public:
     String();
     String(char c);
@@ -34,6 +36,17 @@ public:
 
     String& trim();
     int indexof(const char* s) const;
+    int indexof(const String& s) const;
+    String& remove(int i, int len);
+    String& remove(const char* s);
+    String& remove(const String& s);
+
+    String& replace(const char* s, const char* p);
+    String& replace(const String& s, const String& p);
+    String& replace(const String& s, const char*  p);
+    String& replace(const char* s, const String& p);
+
+    String sub(int i, int len) const;
 
     bool operator ==(const String& s) const;
     bool operator ==(const char* s) const;
@@ -52,6 +65,10 @@ public:
     String operator +(const char* s) const;
     String& operator +=(const String& s);
     String& operator +=(const char* s);
+    String operator -(const String& s) const;
+    String operator -(const char* s) const;
+    String& operator -=(const String& s);
+    String& operator -=(const char* s);
     String& operator =(const String& s);
     String& operator =(const char* s);
     String& operator =(char c);

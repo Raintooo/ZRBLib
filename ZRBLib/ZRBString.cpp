@@ -155,6 +155,26 @@ String& String::operator +=(const char* s)
     return (*this = *this + s);
 }
 
+String String::operator -(const String& s) const
+{
+    return String(*this).remove(s);
+}
+
+String String::operator -(const char* s) const
+{
+    return String(*this).remove(s);
+}
+
+String& String::operator -=(const String& s)
+{
+    return remove(s);
+}
+
+String& String::operator -=(const char* s)
+{
+    return remove(s);
+}
+
 String& String::operator =(const String& s)
 {
     return (*this = s.m_str);
@@ -315,21 +335,76 @@ String& String::trim()
     return *this;
 }
 
-int String::indexof(const char* s) const
+int* String::get_pmt(const char* p) const
+{
+    int len = strlen(p);
+    int* ret = static_cast<int*>(malloc(sizeof(int) * len));
+
+    if(ret != NULL)
+    {
+        int ll = 0;              //这里ll值是前后缀交集的最大长度
+        ret[0] = 0;
+
+        for(int i = 1; i < len; i++)
+        {
+            while((ll > 0) && (p[ll] != p[i]))
+            {
+                ll = ret[ll-1];         //这里匹配不上就找 当前匹配时的重叠部分
+            }
+
+            if(p[ll] == p[i])
+            {
+                ll++;
+            }
+            ret[i] = ll;
+        }
+    }
+    return ret;
+}
+
+int String::kmp(const char* s, const char* p) const
 {
     int ret = -1;
+    int sl = strlen(s);
+    int pl = strlen(p);
+    int* pmt = get_pmt(p);
+
+
+    if((pmt != NULL) && (pl > 0) && (pl <= sl))
+    {
+        for(int i = 0, j = 0; i < sl; i++)
+        {
+            while((j > 0) && (p[j] != s[i]))
+            {
+                j = j - (j - pmt[j-1]);//pmt[j-1];
+            }
+            if(p[j] == s[i])
+            {
+                j++;
+            }
+            if(j == pl)
+            {
+                ret = i + 1 - pl;
+                break;
+            }
+
+        }
+
+    }
+
+    free(pmt);
+
+    return ret;
+}
+
+int String::indexof(const char* s) const
+{
+/*    int ret = -1;
     int len = strlen(s);
     if((s != NULL) && (len <= m_length) && (len > 0))
     {
         char* str = m_str;
         int i = 0;
-//        while(i < m_length - len)
-//        {
-//            ret++;
-//            if(strncmp(str+i, s, len) == 0)
-//                break;
-//            i++;
-//        }
         while(i <= len)
         {
             if(s[i] == str[i])
@@ -352,7 +427,102 @@ int String::indexof(const char* s) const
 
         }
     }
+*/
 
+    return kmp(m_str, s ? s : "");
+}
+
+int String::indexof(const String& s) const
+{
+    return kmp(m_str, s.str());
+}
+
+String& String::remove(int i, int len)
+{
+    if((i > 0) && (i < m_length))
+    {
+        int n = i;
+        int m = i + len;
+
+        while((n < m) && (m < m_length))
+        {
+            m_str[n++] = m_str[m++];
+        }
+
+        m_str[n] = '\0';
+        m_length = m_length - len;
+    }
+
+    return *this;
+}
+
+String& String::remove(const char* s)
+{
+    return remove(indexof(s), s ? strlen(s) : 0);
+}
+
+String& String::remove(const String& s)
+{
+    return remove(indexof(s), s.length());
+}
+
+String& String::replace(const char* s, const char* p)
+{
+    if((s != NULL) && (p != NULL))
+    {
+        int index = indexof(s);
+
+        if(index >= 0)
+        {
+            remove(s);
+            insert(index, p);
+        }
+    }
+    else
+    {
+        THROW_EXCEPTION(InvalidParameterException, "Invaild paramter ..");
+    }
+    return *this;
+
+}
+
+String& String::replace(const String& s, const String& p)
+{
+    return replace(s.str(), p.str());
+}
+
+String& String::replace(const String& s, const char*  p)
+{
+    return replace(s.str(), p);
+}
+
+String& String::replace(const char* s, const String& p)
+{
+    return replace(s, p.str());
+}
+
+String String::sub(int i, int len) const
+{
+    String ret;
+
+    if((i >= 0) && (len <= m_length))
+    {
+       if(len < 0)
+           len = 0;
+       if(len + i > m_length)
+           len = m_length - i;
+       char* str = static_cast<char*>(malloc(len + 1));
+       if(str != NULL)
+       {
+            strncpy(str, m_str + i, len);
+            str[len] = '\0';
+            ret = str;
+       }
+       else
+       {
+            THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create String");
+       }
+    }
     return ret;
 }
 
