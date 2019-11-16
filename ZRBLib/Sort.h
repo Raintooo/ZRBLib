@@ -22,6 +22,12 @@ private:
     template <typename T>
     static void Merge(T src[], T helper[], int begin, int end, bool min2max = true);
 
+    template <typename T>
+    static int partition(T array[], int begin, int end, bool min2max = true);
+
+    template <typename T>
+    static void Quick(T array[], int begin, int end, bool min2max = true);
+
 public:
     template <typename T>
     static void Select(T array[], int len, bool min2max = true);
@@ -37,6 +43,9 @@ public:
 
     template <typename T>
     static void Merge(T array[], int len, bool min2max = true);
+
+    template <typename T>
+    static void Quick(T array[], int len, bool min2max = true);
 
 };
 
@@ -196,6 +205,47 @@ void Sort::Merge(T src[], T helper[], int begin, int end, bool min2max)
 
 }
 
+template <typename T>
+int Sort::partition(T array[], int begin, int end, bool min2max)
+{
+    T e = array[begin];
+
+    while(begin < end)
+    {
+        while(((begin < end) && (min2max ? (array[end] > e) : (array[end] < e))))
+        {
+            end--;
+        }
+        Swap(array[begin], array[end]);
+
+        while(((begin < end) && (min2max ? (array[begin] <= e) : (array[begin] >= e))))
+        {
+            begin++;
+        }
+        Swap(array[begin], array[end]);
+    }
+  //  array[begin] = e;
+
+    return begin;
+}
+
+template <typename T>
+void Sort::Quick(T array[], int begin, int end, bool min2max)
+{
+    if(begin < end)
+    {
+        int mid = partition(array, begin, end, min2max);
+        Quick(array, begin, mid-1, min2max);
+        Quick(array, mid+1, end, min2max);
+    }
+
+}
+
+template <typename T>
+void Sort::Quick(T array[], int len, bool min2max)
+{
+    Quick(array, 0, len-1, min2max);
+}
 
 }
 

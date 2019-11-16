@@ -242,10 +242,10 @@ int main()
 //    permutation(s, s);
 //    Queen<8> q;
 //    q.run();
-    int array[6] = {24, 25, 49, 25, 16, 8};
-    Sort::Merge(array, 6);
+    int array[16] = {24, 25, 49, 25, 16, 8, 44,3,1,4,55,78,11,12,44,56};
+    Sort::Quick(array, 16, true);
 
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < 16; i++)
     {
         cout<< array[i]<< endl;
     }
