@@ -66,7 +66,7 @@ void Sort::Select(T array[], int len, bool min2max)
         min = i;
         for(int j = i+1; j < len; j++)
         {
-            if(min2max ? (array[i] > array[j]) : (array[i] < array[j])) //(min2max && (array[i] > array[j])) || (!min2max && (array[i] < array[j]))
+            if(min2max ? (array[min] > array[j]) : (array[min] < array[j])) //(min2max && (array[i] > array[j])) || (!min2max && (array[i] < array[j]))
             {
                 min = j;
             }

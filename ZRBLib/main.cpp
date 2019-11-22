@@ -6,6 +6,8 @@
 #include "ZRBString.h"
 #include "linklist.h"
 #include "Sort.h"
+#include "C_Sort.h"
+#include "GTree.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -236,19 +238,57 @@ public:
 
 int main()
 {
-    //cout<< f(f(2))<< endl;
-   // HanoTower(3, 'a', 'b', 'c');
-//    char s[] = "abc";
-//    permutation(s, s);
-//    Queen<8> q;
-//    q.run();
-    int array[16] = {24, 25, 49, 25, 16, 8, 44,3,1,4,55,78,11,12,44,56};
-    Sort::Quick(array, 16, true);
 
-    for(int i = 0; i < 16; i++)
+//    int array[16] = {24, 25, 49, 25, 16, 8, 44,3,1,4,55,78,11,12,44,56};
+//    Sort::Select(array, 16, true);
+//    C_Merge(array, 16, true);
+//    for(int i = 0; i < 16; i++)
+//    {
+//        cout<< array[i]<< endl;
+//    }
+
+    GTree<char> t;
+    GTreeNode<char>* node = NULL;
+
+    t.insert('A', NULL);
+
+    node = t.find('A');
+    t.insert('B', node);
+    t.insert('C', node);
+    t.insert('D', node);
+
+    node = t.find('B');
+    t.insert('E', node);
+    t.insert('F', node);
+
+    node = t.find('E');
+    t.insert('K', node);
+    t.insert('L', node);
+
+    node = t.find('C');
+    t.insert('G', node);
+
+    node = t.find('G');
+    t.insert('N', node);
+
+    node = t.find('D');
+    t.insert('H', node);
+    t.insert('I', node);
+    t.insert('J', node);
+
+    node = t.find('H');
+    t.insert('M', node);
+
+    char s[] = "KLFGMIJ";
+    for(int i = 0; i < 7; i++)
     {
-        cout<< array[i]<< endl;
+        node = t.find(s[i]);
+        while(node != NULL)
+        node = node->parent;
+
+        cout<< node->value;
     }
+
 
     return 0;
 

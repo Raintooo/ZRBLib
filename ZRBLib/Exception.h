@@ -108,6 +108,23 @@ public:
 
 };
 
+class InvalidOperationException : public Exception
+{
+public:
+    InvalidOperationException(): Exception(0){}
+    InvalidOperationException(const char* message): Exception(message){}
+    InvalidOperationException(const char* file, int line): Exception(file, line){}
+    InvalidOperationException(const char* message, const char* file, int line): Exception(message, file, line){}
+    InvalidOperationException(const InvalidOperationException& obj) : Exception(obj){}
+    InvalidOperationException& operator = (const InvalidOperationException& obj)
+    {
+        Exception::operator =(obj);
+        return *this;
+    }
+
+};
+
+
 
 }
 
