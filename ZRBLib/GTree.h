@@ -13,6 +13,7 @@ class GTree : public Tree<T>
 protected:
     GTreeNode<T>* find(GTreeNode<T>* node, const T& value) const;
     GTreeNode<T>* find(GTreeNode<T>* node, GTreeNode<T>* obj) const;
+    void free(GTreeNode<T>* node);
 public:
     bool insert(TreeNode<T>* node);
     bool insert(const T& value, TreeNode<T>* parent);
@@ -70,7 +71,7 @@ bool GTree<T>::insert(const T& value, TreeNode<T>* parent)
 {
     bool ret;
 
-    GTreeNode<T>* node = new GTreeNode<T>();
+    GTreeNode<T>* node = GTreeNode<T>::NewNode();
     if(node != NULL)
     {
         node->value = value;
@@ -159,7 +160,7 @@ GTreeNode<T>* GTree<T>::find(TreeNode<T>* node) const
 template <typename T>
 GTreeNode<T>* GTree<T>::root() const
 {
-    return NULL;
+    return dynamic_cast<GTreeNode<T>*>(this->m_root);
 }
 
 template <typename T>
@@ -181,8 +182,26 @@ int GTree<T>::height()
 }
 
 template <typename T>
+void GTree<T>::free(GTreeNode<T>* node)
+{
+    if(node != NULL)
+    {
+        for(node->child.move(0); !node->child.end(); node->child.next())
+        {
+            free(node->child.current());
+        }
+
+        if(node->flag())
+            delete node;
+    }
+}
+
+template <typename T>
 void GTree<T>::clear()
 {
+    free(root());
+    this->m_root = NULL;
+
     return ;
 }
 

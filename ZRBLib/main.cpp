@@ -8,6 +8,7 @@
 #include "Sort.h"
 #include "C_Sort.h"
 #include "GTree.h"
+#include "singleton.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -235,7 +236,6 @@ public:
     }
 };
 
-
 int main()
 {
 
@@ -246,11 +246,14 @@ int main()
 //    {
 //        cout<< array[i]<< endl;
 //    }
-
     GTree<char> t;
     GTreeNode<char>* node = NULL;
+    GTreeNode<char> A;
 
-    t.insert('A', NULL);
+    A.value = 'A';
+    A.parent = NULL;
+
+    t.insert(&A);
 
     node = t.find('A');
     t.insert('B', node);
@@ -279,14 +282,20 @@ int main()
     node = t.find('H');
     t.insert('M', node);
 
+    t.clear();
+
     char s[] = "KLFGMIJ";
     for(int i = 0; i < 7; i++)
     {
-        node = t.find(s[i]);
+        TreeNode<char>* node = t.find(s[i]);
         while(node != NULL)
-        node = node->parent;
+        {
+            cout<< node->value;
+            node = node->parent;
+        }
 
-        cout<< node->value;
+
+        cout<< endl;
     }
 
 
