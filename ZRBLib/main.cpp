@@ -288,6 +288,11 @@ int main()
     cout<< t.height()<< endl;
     cout<< t.degree()<< endl;
 
+    for(t.begin(); !t.end(); t.next())
+    {
+        cout<< t.current()<< endl;
+    }
+
     SharePointer< Tree<char> > p = t.remove(t.find('D'));
 
     char s[] = "KLFGMIJ";
@@ -299,7 +304,6 @@ int main()
             cout<< node->value;
             node = node->parent;
         }
-
 
         cout<< endl;
     }

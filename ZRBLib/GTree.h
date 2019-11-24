@@ -4,6 +4,7 @@
 #include "Tree.h"
 #include "GTreeNode.h"
 #include "Exception.h"
+#include "LinkQueue.h"
 
 namespace ZRBLib
 {
@@ -11,6 +12,11 @@ template <typename T>
 class GTree : public Tree<T>
 {
 protected:
+    LinkQueue< GTreeNode<T>* > m_queue;
+
+    GTree(const GTree<T>& e);
+    operator = (const GTree<T>& e);
+
     GTreeNode<T>* find(GTreeNode<T>* node, const T& value) const;
     GTreeNode<T>* find(GTreeNode<T>* node, GTreeNode<T>* obj) const;
     void free(GTreeNode<T>* node);
@@ -19,6 +25,7 @@ protected:
     int height(GTreeNode<T>* node) const;
     int degree(GTreeNode<T>* node) const;
 public:
+    GTree(){ }
     bool insert(TreeNode<T>* node);
     bool insert(const T& value, TreeNode<T>* parent);
     SharePointer< Tree<T> > remove(const T& value);
@@ -30,6 +37,11 @@ public:
     int count() const;
     int height() const;
     void clear();
+
+    bool begin();
+    bool end();
+    bool next();
+    T current();
 };
 
 template <typename T>
@@ -81,7 +93,7 @@ bool GTree<T>::insert(const T& value, TreeNode<T>* parent)
         node->value = value;
         node->parent = parent;
 
-        insert(node);
+        ret = insert(node);
     }
     else
     {
@@ -124,9 +136,15 @@ SharePointer< Tree<T> > GTree<T>::remove(const T& value)
     GTreeNode<T>* node = find(value);
 
     if(node == NULL)
+    {
         THROW_EXCEPTION(InvalidParameterException, "can`t find node value..");
+    }
     else
+    {
         remove(node, ret);
+        m_queue.clear();
+    }
+
 
     return ret;
 }
@@ -139,9 +157,15 @@ SharePointer< Tree<T> > GTree<T>::remove(TreeNode<T>* node)
     node = find(node);
 
     if(node == NULL)
+    {
         THROW_EXCEPTION(InvalidParameterException, "this node not exit in this tree...");
+    }
     else
+    {
         remove(dynamic_cast<GTreeNode<T>*>(node), ret);
+        m_queue.clear();
+    }
+
 
     return ret;
 }
@@ -303,8 +327,62 @@ void GTree<T>::clear()
 {
     free(root());
     this->m_root = NULL;
+    m_queue.clear();
 
     return ;
+}
+
+template <typename T>
+bool GTree<T>::begin()
+{
+    bool ret = (root() != NULL);
+
+    if(ret)
+    {
+        m_queue.clear();
+        m_queue.add(root());
+    }
+
+    return ret;
+}
+
+template <typename T>
+bool GTree<T>::end()
+{
+    return (m_queue.length() == 0);
+}
+
+template <typename T>
+bool GTree<T>::next()
+{
+    bool ret = (m_queue.length() > 0);
+
+    if(ret)
+    {
+        GTreeNode<T>* node = m_queue.front();
+
+        m_queue.remove();
+
+        for(node->child.move(0); !node->child.end(); node->child.next())
+        {
+            m_queue.add(node->child.current());
+        }
+    }
+
+    return ret;
+}
+
+template <typename T>
+T GTree<T>::current()
+{
+    if(!end())
+    {
+        return m_queue.front()->value;
+    }
+    else
+    {
+        THROW_EXCEPTION(InvalidOperationException, "No value at current posistion...");
+    }
 }
 
 

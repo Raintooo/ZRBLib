@@ -12,6 +12,8 @@ class GTreeNode : public TreeNode<T>
 {
     bool m_flag;
 protected:
+    GTreeNode(const GTreeNode<T>& e);
+    operator = (const GTreeNode<T>& e);
     void* operator new(unsigned int size) throw()
     {
         return Object::operator new(size);
