@@ -9,6 +9,7 @@
 #include "C_Sort.h"
 #include "GTree.h"
 #include "singleton.h"
+#include "c_list.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -246,6 +247,7 @@ int main()
 //    {
 //        cout<< array[i]<< endl;
 //    }
+
     GTree<char> t;
     GTreeNode<char>* node = NULL;
     GTreeNode<char> A;
@@ -282,12 +284,16 @@ int main()
     node = t.find('H');
     t.insert('M', node);
 
-    t.clear();
+    cout<< t.count()<< endl;
+    cout<< t.height()<< endl;
+    cout<< t.degree()<< endl;
+
+    SharePointer< Tree<char> > p = t.remove(t.find('D'));
 
     char s[] = "KLFGMIJ";
     for(int i = 0; i < 7; i++)
     {
-        TreeNode<char>* node = t.find(s[i]);
+        TreeNode<char>* node =  p->find(s[i]);
         while(node != NULL)
         {
             cout<< node->value;
@@ -297,7 +303,7 @@ int main()
 
         cout<< endl;
     }
-
+    cout<< t.count()<< endl;
 
     return 0;
 

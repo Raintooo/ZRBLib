@@ -22,9 +22,9 @@ public:
     virtual TreeNode<T>* find(const T& value) const = 0;
     virtual TreeNode<T>* find(TreeNode<T>* node) const = 0;
     virtual TreeNode<T>* root() const = 0;
-    virtual int degree() = 0;
-    virtual int count() = 0;
-    virtual int height() = 0;
+    virtual int degree() const = 0;
+    virtual int count() const = 0;
+    virtual int height() const = 0;
     virtual void clear() = 0;
 };
 

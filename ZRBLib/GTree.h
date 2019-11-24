@@ -14,6 +14,10 @@ protected:
     GTreeNode<T>* find(GTreeNode<T>* node, const T& value) const;
     GTreeNode<T>* find(GTreeNode<T>* node, GTreeNode<T>* obj) const;
     void free(GTreeNode<T>* node);
+    void remove(GTreeNode<T>* node, GTree<T>*& ret);
+    int count(GTreeNode<T>* node) const;
+    int height(GTreeNode<T>* node) const;
+    int degree(GTreeNode<T>* node) const;
 public:
     bool insert(TreeNode<T>* node);
     bool insert(const T& value, TreeNode<T>* parent);
@@ -22,9 +26,9 @@ public:
     GTreeNode<T>* find(const T& value) const;
     GTreeNode<T>* find(TreeNode<T>* node) const;
     GTreeNode<T>* root() const;
-    int degree();
-    int count();
-    int height();
+    int degree() const;
+    int count() const;
+    int height() const;
     void clear();
 };
 
@@ -88,15 +92,58 @@ bool GTree<T>::insert(const T& value, TreeNode<T>* parent)
 }
 
 template <typename T>
+void GTree<T>::remove(GTreeNode<T>* node, GTree<T>*& ret)
+{
+    ret = new GTree<T>();
+    if(ret == NULL)
+    {
+        THROW_EXCEPTION(NoEnoughMemoryException, "No enough memory to create node...");
+    }
+    else
+    {
+        if(root() == node)
+        {
+            this->m_root = NULL;
+        }
+        else
+        {
+            LinkList<GTreeNode<T>*>& child = dynamic_cast<GTreeNode<T>*>(node->parent)->child;
+
+            child.remove(child.find(node));
+            node->parent = NULL;
+        }
+
+        ret->m_root = node;
+    }
+}
+
+template <typename T>
 SharePointer< Tree<T> > GTree<T>::remove(const T& value)
 {
-    return NULL;
+    GTree<T>* ret = NULL;
+    GTreeNode<T>* node = find(value);
+
+    if(node == NULL)
+        THROW_EXCEPTION(InvalidParameterException, "can`t find node value..");
+    else
+        remove(node, ret);
+
+    return ret;
 }
 
 template <typename T>
 SharePointer< Tree<T> > GTree<T>::remove(TreeNode<T>* node)
 {
-    return NULL;
+    GTree<T>* ret = NULL;
+
+    node = find(node);
+
+    if(node == NULL)
+        THROW_EXCEPTION(InvalidParameterException, "this node not exit in this tree...");
+    else
+        remove(dynamic_cast<GTreeNode<T>*>(node), ret);
+
+    return ret;
 }
 
 template <typename T>
@@ -164,21 +211,76 @@ GTreeNode<T>* GTree<T>::root() const
 }
 
 template <typename T>
-int GTree<T>::degree()
+int GTree<T>::degree(GTreeNode<T>* node) const
 {
-    return 0;
+    int ret = 0;
+
+    if(node != NULL)
+    {
+        ret = node->child.length();
+
+        for(node->child.move(0); !node->child.end(); node->child.next())
+        {
+            int len = degree(node->child.current());
+
+            if(len > ret)
+                ret = len;
+        }
+    }
+
+    return ret;
 }
 
 template <typename T>
-int GTree<T>::count()
+int GTree<T>::degree() const
 {
-    return 0;
+    return degree(root());
 }
 
 template <typename T>
-int GTree<T>::height()
+int GTree<T>::height(GTreeNode<T>* node) const
 {
-    return 0;
+    int ret = 0;
+
+    if(node != NULL)
+    {
+        for(node->child.move(0); !node->child.end(); node->child.next())
+        {
+            int h = height(node->child.current());
+            if(ret < h)
+                ret = h;
+        }
+        ret += 1;
+    }
+
+    return ret;
+}
+
+template <typename T>
+int GTree<T>::count(GTreeNode<T>* node) const
+{
+    int ret = 0;
+
+    if(node != NULL)
+    {
+        ret = 1;
+        for(node->child.move(0); !node->child.end(); node->child.next())
+            ret += count(node->child.current());
+    }
+
+    return ret;
+}
+
+template <typename T>
+int GTree<T>::count() const
+{
+    return count(root());
+}
+
+template <typename T>
+int GTree<T>::height() const
+{
+    return height(root());
 }
 
 template <typename T>
