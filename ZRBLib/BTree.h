@@ -5,21 +5,24 @@
 #include "Tree.h"
 #include "Exception.h"
 #include "LinkQueue.h"
+#include "DynamicArray.h"
 
 namespace ZRBLib
 {
 
-enum BTNodePos
+enum BTTravelsal
 {
-    ANY,
-    LEFT,
-    RIGHT,
+    PreOrder,
+    InOrder,
+    PostOrder
 };
 
 template <typename T>
 class BTree : public Tree<T>
 {
 protected:
+    LinkQueue< BTreeNode<T>* > m_queue;
+
     virtual BTreeNode<T>* find(BTreeNode<T>* node, const T& value) const;
     virtual BTreeNode<T>* find(BTreeNode<T>* node, BTreeNode<T>* obj) const;
     virtual bool insert(BTreeNode<T>* node, BTreeNode<T>* np, BTNodePos type) const;
@@ -28,6 +31,11 @@ protected:
     virtual int count(BTreeNode<T>* node) const;
     virtual int height(BTreeNode<T>* node) const;
     virtual int degree(BTreeNode<T>* node) const;
+
+    void PreOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
+    void InOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
+    void PostOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
+
 public:
     bool insert(TreeNode<T>* node);
     bool insert(TreeNode<T>* node, BTNodePos pos);
@@ -42,6 +50,13 @@ public:
     int count() const;
     int height() const;
     void clear();
+
+    bool begin();
+    bool end();
+    bool next();
+    T current();
+
+    SharePointer<Array<T>> traversal(BTTravelsal order);
 };
 
 
@@ -366,7 +381,131 @@ template <typename T>
 void BTree<T>::clear()
 {
     free(root());
+    m_queue.clear();
     this->m_root = NULL;
+}
+
+template <typename T>
+bool BTree<T>::begin()
+{
+    bool ret = (root() != NULL);
+
+    if(ret)
+    {
+        m_queue.clear();
+        m_queue.add(root());
+    }
+
+    return ret;
+}
+
+template <typename T>
+bool BTree<T>::end()
+{
+    return (m_queue.length() == 0);
+}
+
+template <typename T>
+bool BTree<T>::next()
+{
+    bool ret = (m_queue.length() > 0);
+
+    if(ret)
+    {
+        BTreeNode<T>* node = m_queue.front();
+
+        m_queue.remove();
+
+        if(node->left != NULL)
+            m_queue.add(node->left);
+        if(node->right != NULL)
+            m_queue.add(node->right);
+    }
+
+    return ret;
+}
+
+template <typename T>
+T BTree<T>::current()
+{
+    if(!end())
+    {
+        return m_queue.front()->value;
+    }
+    else
+    {
+        THROW_EXCEPTION(InvalidOperationException, "No value at current posistion...");
+    }
+}
+
+template <typename T>
+void BTree<T>::PreOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue)
+{
+    if(node != NULL)
+    {
+        queue.add(node);
+        PreOrderTraversal(node->left, queue);
+        PreOrderTraversal(node->right, queue);
+    }
+}
+
+template <typename T>
+void BTree<T>::InOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue)
+{
+    if(node != NULL)
+    {
+        InOrderTraversal(node->left, queue);
+        queue.add(node);
+        InOrderTraversal(node->right, queue);
+    }
+}
+
+template <typename T>
+void BTree<T>::PostOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue)
+{
+    if(node != NULL)
+    {
+        PostOrderTraversal(node->left, queue);
+        PostOrderTraversal(node->right, queue);
+        queue.add(node);
+    }
+}
+
+template <typename T>
+SharePointer<Array<T>> BTree<T>::traversal(BTTravelsal order)
+{
+    DynamicArray<T>* ret = NULL;
+    LinkQueue<BTreeNode<T>*> queue;
+
+    switch(order)
+    {
+    case PreOrder:
+        PreOrderTraversal(root(), queue);
+        break;
+    case InOrder:
+        InOrderTraversal(root(), queue);
+        break;
+    case PostOrder:
+        PostOrderTraversal(root(), queue);
+        break;
+    }
+
+    ret = new DynamicArray<T>(queue.length());
+
+    if(ret != NULL)
+    {
+        for(int i = 0; i < ret->length(); i++)
+        {
+            ret->set(i, queue.front()->value);
+            queue.remove();
+        }
+    }
+    else
+    {
+        THROW_EXCEPTION(NoEnoughMemoryException, "No Enough Memory to create Array..");
+    }
+
+    return ret;
 }
 
 

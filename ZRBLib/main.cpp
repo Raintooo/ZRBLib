@@ -280,23 +280,30 @@ int main()
     node = t.find(6);
     t.insert(11, node, LEFT);
 
-    cout<< t.height()<< "---"<< t.degree()<< endl;
+//    cout<< t.height()<< "---"<< t.degree()<< endl;
 
-    SharePointer< Tree<int> > sp = t.remove(3);
+//    SharePointer< Tree<int> > sp = t.remove(3);
 
-    cout<< t.height()<< "---"<< endl;
+//    cout<< t.height()<< "---"<< endl;
 
-    int a[] = {8, 9, 10, 11};
+//    int a[] = {8, 9, 10, 11};
 
-    for(int i = 0; i < sizeof(a)/sizeof(a[0]); i++)
+//    for(int i = 0; i < sizeof(a)/sizeof(a[0]); i++)
+//    {
+//        TreeNode<int>* n = t.find(a[i]);
+//        while(n)
+//        {
+//            cout<< n->value<< "-";
+//            n = n->parent;
+//        }
+//        cout<< endl;
+//    }
+
+    SharePointer<Array<int>> sp = t.traversal(PostOrder);
+
+    for(int i = 0; i < (*sp).length(); i++)
     {
-        TreeNode<int>* n = t.find(a[i]);
-        while(n)
-        {
-            cout<< n->value<< "-";
-            n = n->parent;
-        }
-        cout<< endl;
+        cout<< (*sp)[i]<< endl;
     }
 
     return 0;

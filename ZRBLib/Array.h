@@ -24,7 +24,7 @@ public:
 template <typename T>
 bool Array<T>::set(int index, const T& e)
 {
-    bool bRet = (index > 0) && (index < length());
+    bool bRet = (index >= 0) && (index < length());
     if(bRet)
     {
         m_array[index] = e;
