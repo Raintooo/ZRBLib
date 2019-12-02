@@ -13,6 +13,9 @@ class Tree : public Object
 {
 protected:
     TreeNode<T>* m_root;
+
+    Tree(const Tree<T>& e);
+    Tree<T>& operator = (const Tree<T>& e);
 public:
     Tree(){ m_root = NULL;}
     virtual bool insert(TreeNode<T>* node) = 0;

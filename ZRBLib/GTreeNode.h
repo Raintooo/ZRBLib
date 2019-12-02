@@ -10,20 +10,11 @@ namespace ZRBLib
 template <typename T>
 class GTreeNode : public TreeNode<T>
 {
-    bool m_flag;
-protected:
-    GTreeNode(const GTreeNode<T>& e);
-    operator = (const GTreeNode<T>& e);
-    void* operator new(unsigned int size) throw()
-    {
-        return Object::operator new(size);
-    }
 public:
     LinkList<GTreeNode<T>*> child;
 
     GTreeNode()
     {
-        m_flag = false;
     }
 
     static GTreeNode<T>* NewNode()
@@ -34,11 +25,6 @@ public:
             ret->m_flag = true;
 
         return ret;
-    }
-
-    bool flag()
-    {
-        return m_flag;
     }
 };
 

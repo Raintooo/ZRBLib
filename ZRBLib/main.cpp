@@ -10,6 +10,7 @@
 #include "GTree.h"
 #include "singleton.h"
 #include "c_list.h"
+#include "BTree.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -248,66 +249,55 @@ int main()
 //        cout<< array[i]<< endl;
 //    }
 
-    GTree<char> t;
-    GTreeNode<char>* node = NULL;
-    GTreeNode<char> A;
+    BTree<int> t;
+    BTreeNode<int>* node = NULL;
+    BTreeNode<int> A;
 
-    A.value = 'A';
+    A.value = 1;
     A.parent = NULL;
 
     t.insert(&A);
 
-    node = t.find('A');
-    t.insert('B', node);
-    t.insert('C', node);
-    t.insert('D', node);
+    node = t.find(1);
+    t.insert(2, node);
+    t.insert(3, node);
 
-    node = t.find('B');
-    t.insert('E', node);
-    t.insert('F', node);
+    node = t.find(2);
+    t.insert(4, node);
+    t.insert(5, node);
 
-    node = t.find('E');
-    t.insert('K', node);
-    t.insert('L', node);
+    node = t.find(3);
+    t.insert(6, node);
+    t.insert(7, node);
 
-    node = t.find('C');
-    t.insert('G', node);
+    node = t.find(4);
+    t.insert(8, node);
+    t.insert(9, node);
 
-    node = t.find('G');
-    t.insert('N', node);
+    node = t.find(5);
+    t.insert(10, node);
 
-    node = t.find('D');
-    t.insert('H', node);
-    t.insert('I', node);
-    t.insert('J', node);
+    node = t.find(6);
+    t.insert(11, node, LEFT);
 
-    node = t.find('H');
-    t.insert('M', node);
+    cout<< t.height()<< "---"<< t.degree()<< endl;
 
-    cout<< t.count()<< endl;
-    cout<< t.height()<< endl;
-    cout<< t.degree()<< endl;
+    SharePointer< Tree<int> > sp = t.remove(3);
 
-    for(t.begin(); !t.end(); t.next())
+    cout<< t.height()<< "---"<< endl;
+
+    int a[] = {8, 9, 10, 11};
+
+    for(int i = 0; i < sizeof(a)/sizeof(a[0]); i++)
     {
-        cout<< t.current()<< endl;
-    }
-
-    SharePointer< Tree<char> > p = t.remove(t.find('D'));
-
-    char s[] = "KLFGMIJ";
-    for(int i = 0; i < 7; i++)
-    {
-        TreeNode<char>* node =  p->find(s[i]);
-        while(node != NULL)
+        TreeNode<int>* n = t.find(a[i]);
+        while(n)
         {
-            cout<< node->value;
-            node = node->parent;
+            cout<< n->value<< "-";
+            n = n->parent;
         }
-
         cout<< endl;
     }
-    cout<< t.count()<< endl;
 
     return 0;
 
