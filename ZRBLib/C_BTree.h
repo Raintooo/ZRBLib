@@ -2,6 +2,7 @@
 #define C_BTREE_H
 
 #include <iostream>
+#include <assert.h>
 
 namespace ZRBLib
 {
@@ -27,18 +28,12 @@ static C_BNode* _CreateBTree(char *str, int* currpos)
     if(*(str + (*currpos)) != '#')
     {
         ret = reinterpret_cast<C_BNode*>(malloc(sizeof(C_BNode)));
-        if(ret != NULL)
-        {
-            ret->value = *(str + (*currpos));
-            *currpos += 1;
-            ret->left = _CreateBTree(str, currpos);
-            ret->right = _CreateBTree(str, currpos);
-        }
-        else
-        {
-            return NULL;
-        }
+        assert(ret != NULL);
 
+        ret->value = *(str + (*currpos));
+        *currpos += 1;
+        ret->left = _CreateBTree(str, currpos);
+        ret->right = _CreateBTree(str, currpos);
     }
     else if(*(str + (*currpos)) == '#')
     {
