@@ -11,6 +11,7 @@
 #include "singleton.h"
 #include "c_list.h"
 #include "BTree.h"
+#include "C_BTree.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -240,45 +241,36 @@ public:
 
 int main()
 {
+//    BTree<int> t;
+//    BTreeNode<int>* node = NULL;
+//    BTreeNode<int> A;
 
-//    int array[16] = {24, 25, 49, 25, 16, 8, 44,3,1,4,55,78,11,12,44,56};
-//    Sort::Select(array, 16, true);
-//    C_Merge(array, 16, true);
-//    for(int i = 0; i < 16; i++)
-//    {
-//        cout<< array[i]<< endl;
-//    }
+//    A.value = 1;
+//    A.parent = NULL;
 
-    BTree<int> t;
-    BTreeNode<int>* node = NULL;
-    BTreeNode<int> A;
+//    t.insert(&A);
 
-    A.value = 1;
-    A.parent = NULL;
+//    node = t.find(1);
+//    t.insert(2, node);
+//    t.insert(3, node);
 
-    t.insert(&A);
+//    node = t.find(2);
+//    t.insert(4, node);
+//    t.insert(5, node);
 
-    node = t.find(1);
-    t.insert(2, node);
-    t.insert(3, node);
+//    node = t.find(3);
+//    t.insert(6, node);
+//    t.insert(7, node);
 
-    node = t.find(2);
-    t.insert(4, node);
-    t.insert(5, node);
+//    node = t.find(4);
+//    t.insert(8, node);
+//    t.insert(9, node);
 
-    node = t.find(3);
-    t.insert(6, node);
-    t.insert(7, node);
+//    node = t.find(5);
+//    t.insert(10, node);
 
-    node = t.find(4);
-    t.insert(8, node);
-    t.insert(9, node);
-
-    node = t.find(5);
-    t.insert(10, node);
-
-    node = t.find(6);
-    t.insert(11, node, LEFT);
+//    node = t.find(6);
+//    t.insert(11, node, LEFT);
 
 //    cout<< t.height()<< "---"<< t.degree()<< endl;
 
@@ -286,29 +278,23 @@ int main()
 
 //    cout<< t.height()<< "---"<< endl;
 
-//    int a[] = {8, 9, 10, 11};
+//    SharePointer<Array<int>> sp = t.traversal(PostOrder);
 
-//    for(int i = 0; i < sizeof(a)/sizeof(a[0]); i++)
+//    for(int i = 0; i < (*sp).length(); i++)
 //    {
-//        TreeNode<int>* n = t.find(a[i]);
-//        while(n)
-//        {
-//            cout<< n->value<< "-";
-//            n = n->parent;
-//        }
-//        cout<< endl;
+//        cout<< (*sp)[i]<< endl;
 //    }
 
-    SharePointer<Array<int>> sp = t.traversal(PostOrder);
+    char value[] = {'1', '2', '4', '8', '#', '#', '9', '#', '#', '5', '#', '#', '3', '6', '#', '#', '7', '#', '#'};
+    C_BNode* root = CreateBTree(value);
 
-    for(int i = 0; i < (*sp).length(); i++)
-    {
-        cout<< (*sp)[i]<< endl;
-    }
+    PreOrderTraverse(root);
 
     return 0;
 
 }
+
+
 
 
 
