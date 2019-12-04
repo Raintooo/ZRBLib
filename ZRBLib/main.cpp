@@ -12,6 +12,7 @@
 #include "c_list.h"
 #include "BTree.h"
 #include "C_BTree.h"
+#include "BTree_pratice.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -239,109 +240,12 @@ public:
     }
 };
 
+
 int main()
 {
-    BTree<int> t;
-    BTreeNode<int>* node = NULL;
-    BTreeNode<int> A;
 
-    A.value = 1;
-    A.parent = NULL;
-
-    t.insert(&A);
-
-    node = t.find(1);
-    t.insert(2, node);
-    t.insert(3, node);
-
-    node = t.find(2);
-    t.insert(4, node);
-    t.insert(5, node);
-
-    node = t.find(3);
-    t.insert(6, node);
-    t.insert(7, node);
-
-    node = t.find(4);
-    t.insert(8, node);
-    t.insert(9, node);
-
-    node = t.find(5);
-    t.insert(10, node);
-
-    node = t.find(6);
-    t.insert(11, node, LEFT);
-
-//    SharePointer< Tree<int> > sp = t.remove(3);
-
-//    SharePointer<Array<int>> sp = t.traversal(PostOrder);
-//    SharePointer<BTree<int>> bclone = t.clone();
-//    int a[] = {8, 9, 10, 7};
-
-//    for(int i = 0; i < 4; i++)
-//    {
-//        TreeNode<int>* node = bclone->find(a[i]);
-//        while(node)
-//        {
-//            cout<< node->value<< "-";
-//            node = node->parent;
-//        }
-//        cout<< endl;
-//    }
-
-//    cout<< "--------"<< endl;
-
-
-//    for(int i = 0; i < 5; i++)
-//    {
-//        TreeNode<int>* node = t.find(a[i]);
-//        while(node)
-//        {
-//            cout<< node->value<< "-";
-//            node = node->parent;
-//        }
-//        cout<< endl;
-//    }
-
-    SharePointer<Array<int>> sp = t.traversal(PreOrder);
-    for(int i = 0; i < (*sp).length(); i++)
-        cout<< (*sp)[i]<<"-";
-    cout<< "-----"<< endl;
-
-    BTreeNode<int>* head = t.thread(PreOrder);
-    while(head != NULL)
-    {
-        cout<< head->value<< "-";
-        head = head->right;
-    }
-
+    test();
     cout<< endl;
-
-
-
-    BTree<int> nt;
-
-    nt.insert(0, NULL);
-
-    node = nt.find(0);
-    nt.insert(6, node);
-    nt.insert(2, node);
-
-    node = nt.find(2);
-    nt.insert(7, node);
-    nt.insert(8, node);
-
-
-    SharePointer<BTree<int>> bt = t.add(nt);
-    sp = bt->traversal(PreOrder);
-    for(int i = 0; i < (*sp).length(); i++)
-        cout<< (*sp)[i]<<"-";
-    cout<< "-----"<< endl;
-
-//    for(bt->begin(); !bt->end(); bt->next())
-//    {
-//        cout<< bt->current()<< "-";
-//    }
 
     return 0;
 
