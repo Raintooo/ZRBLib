@@ -303,18 +303,20 @@ int main()
 //        cout<< endl;
 //    }
 
-    SharePointer<Array<int>> sp = t.traversal(PostOrder);
+    SharePointer<Array<int>> sp = t.traversal(PreOrder);
     for(int i = 0; i < (*sp).length(); i++)
         cout<< (*sp)[i]<<"-";
     cout<< "-----"<< endl;
 
-    SharePointer<BTree<int>> bclone = t.clone();
-    SharePointer<Array<int>> sp_bclone = bclone->traversal(PostOrder);
-    for(int i = 0; i < (*sp_bclone).length(); i++)
-        cout<< (*sp_bclone)[i]<<"-";
-    cout<< "-----"<< endl;
+    BTreeNode<int>* head = t.thread(PreOrder);
+    while(head != NULL)
+    {
+        cout<< head->value<< "-";
+        head = head->right;
+    }
 
-    cout<< (t == *bclone)<< endl;;
+    cout<< endl;
+
 
 
     BTree<int> nt;

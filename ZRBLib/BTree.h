@@ -14,7 +14,8 @@ enum BTTravelsal
 {
     PreOrder,
     InOrder,
-    PostOrder
+    PostOrder,
+    LevelOrder
 };
 
 template <typename T>
@@ -35,10 +36,14 @@ protected:
     void PreOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
     void InOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
     void PostOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
+    void LevelOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue);
 
     BTreeNode<T>* clone(BTreeNode<T>* node) const;
     bool equal(BTreeNode<T>* lh, BTreeNode<T>* rh);
     BTreeNode<T>* add(BTreeNode<T>* lh, BTreeNode<T>* rh);
+
+    void traversal(BTTravelsal order, LinkQueue<BTreeNode<T>*>& queue);
+    BTreeNode<T>* connect(LinkQueue<BTreeNode<T>*>& queue);
 
 public:
     bool insert(TreeNode<T>* node);
@@ -60,6 +65,7 @@ public:
     bool next();
     T current();
 
+    BTreeNode<T>* thread(BTTravelsal order);
     SharePointer<Array<T>> traversal(BTTravelsal order);
     SharePointer<BTree<T>> clone() const;
     SharePointer<BTree<T>> add(const BTree<T>& btree);
@@ -481,11 +487,32 @@ void BTree<T>::PostOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& 
 }
 
 template <typename T>
-SharePointer<Array<T>> BTree<T>::traversal(BTTravelsal order)
+void BTree<T>::LevelOrderTraversal(BTreeNode<T>* node, LinkQueue<BTreeNode<T>*>& queue)
 {
-    DynamicArray<T>* ret = NULL;
-    LinkQueue<BTreeNode<T>*> queue;
+    if(node != NULL)
+    {
+        LinkQueue<BTreeNode<T>*> tmp;
 
+        tmp.add(node);
+
+        while(tmp.length() > 0)
+        {
+            BTreeNode<T>* n = tmp.front();
+            if(n->left != NULL)
+                tmp.add(n->left);
+            if(n->right != NULL)
+                tmp.add(n->right);
+
+            tmp.remove();
+
+            queue.add(n);
+        }
+    }
+}
+
+template <typename T>
+void BTree<T>::traversal(BTTravelsal order, LinkQueue<BTreeNode<T>*>& queue)
+{
     switch(order)
     {
     case PreOrder:
@@ -497,7 +524,22 @@ SharePointer<Array<T>> BTree<T>::traversal(BTTravelsal order)
     case PostOrder:
         PostOrderTraversal(root(), queue);
         break;
+    case LevelOrder:
+        LevelOrderTraversal(root(), queue);
+        break;
+    default:
+        THROW_EXCEPTION(InvalidParameterException, "order paramter is invaild..");
+        break;
     }
+}
+
+template <typename T>
+SharePointer<Array<T>> BTree<T>::traversal(BTTravelsal order)
+{
+    DynamicArray<T>* ret = NULL;
+    LinkQueue<BTreeNode<T>*> queue;
+
+    traversal(order, queue);
 
     ret = new DynamicArray<T>(queue.length());
 
@@ -516,6 +558,54 @@ SharePointer<Array<T>> BTree<T>::traversal(BTTravelsal order)
 
     return ret;
 }
+
+template <typename T>
+BTreeNode<T>* BTree<T>::connect(LinkQueue<BTreeNode<T>*>& queue)
+{
+    BTreeNode<T>* ret = NULL;
+
+    if(queue.length() > 0)
+    {
+        ret = queue.front();
+
+        BTreeNode<T>* silder = queue.front();
+        silder->left = NULL;
+        queue.remove();
+
+        while(queue.length() > 0)
+        {
+            silder->right = queue.front();
+            queue.front()->left = silder;
+
+            silder = queue.front();
+            queue.remove();
+        }
+        silder->right = NULL;
+    }
+
+    return ret;
+}
+
+template <typename T>
+BTreeNode<T>* BTree<T>::thread(BTTravelsal order)
+{
+    BTreeNode<T>* ret = NULL;
+
+    LinkQueue<BTreeNode<T>*> queue;
+
+    traversal(order, queue);
+
+    ret = connect(queue);
+
+    this->m_root = NULL;
+
+    this->m_queue.clear();
+
+    return ret;
+}
+
+
+
 
 template <typename T>
 BTreeNode<T>* BTree<T>::clone(BTreeNode<T>* node) const
