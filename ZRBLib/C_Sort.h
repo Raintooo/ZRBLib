@@ -1,6 +1,7 @@
 ﻿#ifndef C_SORT_H
 #define C_SORT_H
 
+using namespace std;
 namespace ZRBLib
 {
 void C_Swap(int* l, int* r)
@@ -114,6 +115,41 @@ void C_Merge(int* array, int len, bool min2max)
 
     _C_Merge(array, helpper, 0, len-1, min2max);
 
+}
+
+/*
+ * 全排列
+*/
+void permutation(char* s, char* e)
+{
+    if(*s == '\0')
+    {
+        cout<< e<< endl;
+    }
+    else
+    {
+        int len = strlen(s);
+        for(int i = 0; i < len; i++)
+        {
+            swap(s[0], s[i]);
+            permutation(s+1, e);
+            swap(s[0], s[i]);
+        }
+    }
+}
+
+void HanoTower(int n, char a, char b, char c)   //n 木块数量
+{
+    if(n == 1)
+    {
+        cout<< a << "-->"<< c<< endl;
+    }
+    else
+    {
+        HanoTower(n-1, a, c, b);    //将 n-1 个 a 借助 c 移动到b
+        HanoTower(1, a, b, c);      //将最后一个 a 移动到 c
+        HanoTower(n-1, b, a, c);    //将 b 借助 a 移动到 c
+    }
 }
 
 
