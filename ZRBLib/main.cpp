@@ -15,6 +15,7 @@
 #include "BTree_pratice.h"
 #include "Grap.h"
 #include "MatrixGrap.h"
+#include "ListGrap.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -87,34 +88,37 @@ int f(int x)
 }
 
 
+class A
+{};
+
 int main()
 {
-    MatrixGrap<3, int, int> g;
+    ListGrap<char, int> g;
 
-    g.setEdge(0, 1, 1);
-    g.setEdge(1, 0, 2);
-    g.setEdge(1, 2, 3);
+   g.addVertex('a');
+   g.addVertex('b');
+   g.addVertex('c');
+   g.addVertex('d');
 
-    cout<<g.vCount()<< endl;
-    cout<<g.eCount()<< endl;
-    cout<<g.OD(1)<< endl;
-    cout<<g.ID(1)<< endl;
-    cout<<g.TD(1)<< endl;
+   for(int i = 0; i < g.vCount(); i++)
+       cout<< g.getVertex(i)<< " ";
 
-    cout<< g.getEdge(0, 1)<< endl;
-    cout<< g.getEdge(1, 0)<< endl;
-    cout<< g.getEdge(1, 2)<< endl;
+   cout<< endl;
 
-    cout<< "-----"<< endl;
+   g.setEdge(0, 1, 5);
+   g.setEdge(0, 3, 6);
+   g.setEdge(1, 2, 8);
+   g.setEdge(2, 3, 2);
+   g.setEdge(3, 1, 9);
 
-    SharePointer< Array<int> > sp = g.getAdjacent(1);
+   cout<< g.getEdge(0, 1)<< endl;
+   cout<< g.getEdge(0, 3)<< endl;
+   cout<< g.getEdge(1, 2)<< endl;
+   cout<< g.getEdge(2, 3)<< endl;
+   cout<< g.getEdge(3, 1)<< endl;
 
-    for(int i = 0; i < sp->length(); i++)
-        cout<< (*sp)[i]<< " ";
-
-    cout<< endl<< "-----"<< endl;
-    g.removeEdge(0, 1);
-    cout<<g.eCount()<< endl;
+   g.removeEdge(3, 1);
+   cout<< g.getEdge(3, 1)<< endl;
 
     return 0;
 

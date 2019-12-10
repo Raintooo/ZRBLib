@@ -8,6 +8,37 @@
 namespace ZRBLib
 {
 
+template <typename E>
+struct Edge : public Object
+{
+    int b;  //start point index
+    int e;  //end point index
+    E data;
+
+    Edge(int i = -1, int j = -1)
+    {
+        b = i;
+        e = j;
+    }
+
+    Edge(int i, int j, const E& value)
+    {
+        b = i;
+        e = j;
+        data = value;
+    }
+
+    bool operator ==(const Edge<E>& obj)
+    {
+        return (b == obj.b) && (e == obj.e);
+    }
+
+    bool operator !=(const Edge<E>& obj)
+    {
+        return !(*this == obj);
+    }
+};
+
 template <typename V, typename E> //V : Vertex(顶点)  E : Edge(边)
 class Grap : public Object
 {
