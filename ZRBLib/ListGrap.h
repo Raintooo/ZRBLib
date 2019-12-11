@@ -48,27 +48,27 @@ public:
 };
 
 template <typename V, typename E>
-ListGrap<V, E>::ListGrap(unsigned int n)
+ListGrap<V, E>::ListGrap(unsigned int n)    //O(n)
 {
     for(int i = 0; i < n; i++)
         addVertex();
 }
 
 template <typename V, typename E>
-ListGrap<V, E>::~ListGrap()
+ListGrap<V, E>::~ListGrap()         //O(n)
 {
     while(m_list.length() > 0)
     {
         Vertex* toDel = m_list.get(0);
 
-        toDel->edge.clear();    //delete edge
+    //    toDel->edge.clear();    //delete edge
         m_list.remove(0);       //delete list Node
         delete toDel;           //delete vertex
     }
 }
 
 template <typename V, typename E>
-int ListGrap<V, E>::addVertex()
+int ListGrap<V, E>::addVertex()     //O(n)
 {
     int ret = -1;
 
@@ -90,7 +90,7 @@ int ListGrap<V, E>::addVertex()
 }
 
 template <typename V, typename E>
-int ListGrap<V, E>::addVertex(const V& value)
+int ListGrap<V, E>::addVertex(const V& value)   //O(n)
 {
     int ret = addVertex();
 
@@ -101,7 +101,7 @@ int ListGrap<V, E>::addVertex(const V& value)
 }
 
 template <typename V, typename E>
-void ListGrap<V, E>::removeVertex()
+void ListGrap<V, E>::removeVertex()     //O(n2)
 {
     if(m_list.length() > 0)
     {
@@ -120,7 +120,7 @@ void ListGrap<V, E>::removeVertex()
                 }
             }
         }
-        v->edge.clear();
+      //  v->edge.clear();
         delete v->data;
         delete v;
     }
@@ -131,7 +131,7 @@ void ListGrap<V, E>::removeVertex()
 }
 
 template <typename V, typename E>
-V ListGrap<V, E>::getVertex(int i)
+V ListGrap<V, E>::getVertex(int i)  //O(n)
 {
     V ret;
 
@@ -144,7 +144,7 @@ V ListGrap<V, E>::getVertex(int i)
 }
 
 template <typename V, typename E>
-bool ListGrap<V, E>::getVertex(int i, V& value)
+bool ListGrap<V, E>::getVertex(int i, V& value)     //O(n)
 {
     bool ret = ((0 <= i) && (i < vCount()));
 
@@ -166,7 +166,7 @@ bool ListGrap<V, E>::getVertex(int i, V& value)
 }
 
 template <typename V, typename E>
-bool ListGrap<V, E>::setVertex(int i, const V& value)
+bool ListGrap<V, E>::setVertex(int i, const V& value)       //O(n)
 {
     bool ret = ((0 <= i) && (i < vCount()));
 
@@ -194,7 +194,7 @@ bool ListGrap<V, E>::setVertex(int i, const V& value)
 }
 
 template <typename V, typename E>
-SharePointer< Array<int> > ListGrap<V, E>::getAdjacent(int i)
+SharePointer< Array<int> > ListGrap<V, E>::getAdjacent(int i)   //O(n)
 {
     DynamicArray<int>* ret = NULL;
 
@@ -227,7 +227,7 @@ SharePointer< Array<int> > ListGrap<V, E>::getAdjacent(int i)
 }
 
 template <typename V, typename E>
-E ListGrap<V, E>::getEdge(int i, int j)
+E ListGrap<V, E>::getEdge(int i, int j)     //O(n)
 {
     E ret;
 
@@ -238,7 +238,7 @@ E ListGrap<V, E>::getEdge(int i, int j)
 }
 
 template <typename V, typename E>
-bool ListGrap<V, E>::getEdge(int i, int j, E& value)
+bool ListGrap<V, E>::getEdge(int i, int j, E& value)    //O(n)
 {
     bool ret = (((0 <= i) && (i < vCount())) &&
                 ((0 <= j) && (j < vCount())) );
@@ -263,7 +263,7 @@ bool ListGrap<V, E>::getEdge(int i, int j, E& value)
 }
 
 template <typename V, typename E>
-bool ListGrap<V, E>::setEdge(int i, int j, const E& value)
+bool ListGrap<V, E>::setEdge(int i, int j, const E& value)      //O(n)
 {
     bool ret = (((0 <= i) && (i < vCount())) &&
                 ((0 <= j) && (j < vCount())) );
@@ -287,7 +287,7 @@ bool ListGrap<V, E>::setEdge(int i, int j, const E& value)
 }
 
 template <typename V, typename E>
-bool ListGrap<V, E>::removeEdge(int i , int j)
+bool ListGrap<V, E>::removeEdge(int i , int j)       //O(n)
 {
     bool ret = (((0 <= i) && (i < vCount())) &&
                 ((0 <= j) && (j < vCount())) );
@@ -307,13 +307,13 @@ bool ListGrap<V, E>::removeEdge(int i , int j)
 }
 
 template <typename V, typename E>
-int ListGrap<V, E>::vCount()   //amount of Vertex
+int ListGrap<V, E>::vCount()   //amount of Vertex       O(1)
 {
     return m_list.length();
 }
 
 template <typename V, typename E>
-int ListGrap<V, E>::eCount()   //amount of Edge
+int ListGrap<V, E>::eCount()   //amount of Edge         O(n)
 {
     int ret = 0;
 
@@ -326,7 +326,7 @@ int ListGrap<V, E>::eCount()   //amount of Edge
 }
 
 template <typename V, typename E>
-int ListGrap<V, E>::OD(int i)  //output degree
+int ListGrap<V, E>::OD(int i)  //output degree      O(n)
 {
     int ret = 0;
 
@@ -345,7 +345,7 @@ int ListGrap<V, E>::OD(int i)  //output degree
 }
 
 template <typename V, typename E>
-int ListGrap<V, E>::ID(int i)  //input degree
+int ListGrap<V, E>::ID(int i)  //input degree       O(n2)
 {
     int ret = 0;
 

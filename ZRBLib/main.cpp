@@ -93,32 +93,51 @@ class A
 
 int main()
 {
-    ListGrap<char, int> g;
+   MatrixGrap<9, char, int> g;
+   const char* VD = "ABCDEFGHI";
 
-   g.addVertex('a');
-   g.addVertex('b');
-   g.addVertex('c');
-   g.addVertex('d');
+   for(int i = 0; i < strlen(VD); i++)
+       g.setVertex(i, VD[i]);
 
-   for(int i = 0; i < g.vCount(); i++)
-       cout<< g.getVertex(i)<< " ";
+
+   g.setEdge(0, 1, 0);
+   g.setEdge(1, 0, 0);
+
+   g.setEdge(0, 3, 0);
+   g.setEdge(3, 0, 0);
+
+   g.setEdge(0, 4, 0);
+   g.setEdge(4, 0, 0);
+
+   g.setEdge(1, 2, 0);
+   g.setEdge(2, 1, 0);
+
+   g.setEdge(1, 4, 0);
+   g.setEdge(4, 1, 0);
+
+   g.setEdge(3, 6, 0);
+   g.setEdge(6, 3, 0);
+
+   g.setEdge(4, 6, 0);
+   g.setEdge(6, 4, 0);
+
+   g.setEdge(2, 5, 0);
+   g.setEdge(5, 2, 0);
+
+   g.setEdge(6, 7, 0);
+   g.setEdge(7, 6, 0);
+
+   g.setEdge(7, 8, 0);
+   g.setEdge(8, 7, 0);
+
+   SharePointer<Array<int>> sa = g.DFS(0);
+
+   for(int i = 0; i < sa->length(); i++)
+       cout<< (*sa)[i]<<" ";
 
    cout<< endl;
+   DFS(g,0);
 
-   g.setEdge(0, 1, 5);
-   g.setEdge(0, 3, 6);
-   g.setEdge(1, 2, 8);
-   g.setEdge(2, 3, 2);
-   g.setEdge(3, 1, 9);
-
-   cout<< g.getEdge(0, 1)<< endl;
-   cout<< g.getEdge(0, 3)<< endl;
-   cout<< g.getEdge(1, 2)<< endl;
-   cout<< g.getEdge(2, 3)<< endl;
-   cout<< g.getEdge(3, 1)<< endl;
-
-   g.removeEdge(3, 1);
-   cout<< g.getEdge(3, 1)<< endl;
 
     return 0;
 
