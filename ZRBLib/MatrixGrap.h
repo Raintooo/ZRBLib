@@ -21,6 +21,7 @@ public:
     bool getVertex(int i, V& value);
     bool setVertex(int i, const V& value);
     SharePointer< Array<int> > getAdjacent(int i);  //获取邻接的顶点集合
+    bool isAdjacent(int i, int j);
     E getEdge(int i, int j);
     bool getEdge(int i, int j, E& value);
     bool setEdge(int i, int j, const E& value);
@@ -111,6 +112,12 @@ bool MatrixGrap<N, V, E>::setVertex(int i, const V& value)
         }
     }
     return ret;
+}
+
+template <int N, typename V, typename E>
+bool MatrixGrap<N, V, E>::isAdjacent(int i, int j)
+{
+    return (i >= 0) && (i < vCount()) && (j >= 0) && (j < vCount()) && (m_edge[i][j] != NULL);
 }
 
 template <int N, typename V, typename E>

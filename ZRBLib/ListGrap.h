@@ -35,6 +35,7 @@ public:
     bool getVertex(int i, V& value);
     bool setVertex(int i, const V& value);
     SharePointer< Array<int> > getAdjacent(int i);  //获取邻接的顶点集合
+    bool isAdjacent(int i, int j);
     E getEdge(int i, int j);
     bool getEdge(int i, int j, E& value);
     bool setEdge(int i, int j, const E& value);
@@ -191,6 +192,12 @@ bool ListGrap<V, E>::setVertex(int i, const V& value)       //O(n)
     }
 
     return ret;
+}
+
+template <typename V, typename E>
+bool ListGrap<V, E>::isAdjacent(int i, int j)
+{
+    return (i >= 0) && (i < vCount()) && (j >= 0) && (j < vCount()) && (m_list.get(i)->edge.find(j) >= 0);
 }
 
 template <typename V, typename E>

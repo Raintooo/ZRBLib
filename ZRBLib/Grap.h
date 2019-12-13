@@ -72,6 +72,7 @@ public:
     virtual bool getVertex(int i, V& value) = 0;
     virtual bool setVertex(int i, const V& value) = 0;
     virtual SharePointer< Array<int> > getAdjacent(int i) = 0;
+    virtual bool isAdjacent(int i, int j) = 0;
     virtual E getEdge(int i, int j) = 0;
     virtual bool getEdge(int i, int j, E& value) = 0;
     virtual bool setEdge(int i, int j, const E& value) = 0;
@@ -85,6 +86,101 @@ public:
     {
         return OD(i) + ID(i);
     }
+
+    bool asUndireted()  //判断是否可作为无向图
+    {
+        bool ret = true;
+
+        for(int i = 0; i < vCount(); i++)
+        {
+            for(int j = 0; j < vCount(); j++)
+            {
+                if(isAdjacent(i, j))
+                {
+                    ret = ret && isAdjacent(j, i) && (getEdge(i, j) == getEdge(j, i));
+                }
+            }
+        }
+
+
+        return ret;
+    }
+
+    SharePointer< Array<Edge<E>> > Prim(const E& LIMIT)
+    {
+        LinkQueue<Edge<E>> ret;
+
+        if(asUndireted())
+        {
+            DynamicArray<bool> mark(vCount());      //记录搜索过的顶点
+            DynamicArray<int> adjVex(vCount());     //记录路径
+            DynamicArray<E> cost(vCount());         //记录权值
+            SharePointer<Array<int>> aj = NULL;
+            bool end =false;
+            int v = 0;
+
+            for(int j = 0; j < vCount(); j++)       //init
+            {
+                mark[j] = false;
+                cost[j] = LIMIT;
+                adjVex[j] = -1;
+            }
+
+            mark[v] = true;                         //add first element
+            aj = getAdjacent(v);                    //get adjacent vertexs
+            for(int i = 0; i < aj->length(); i++)
+            {
+                adjVex[(*aj)[i]] = v;               //添加到路径记录中
+                cost[(*aj)[i]] = getEdge(v, (*aj)[i]);  //将权值记录到对应顶点
+            }
+
+            for(int j = 0; j < vCount(); j++)
+            {
+                E m = LIMIT;
+                int k = -1;
+
+                for(int i = 0; i < vCount(); i++)   //记录未检测的且权值最小的顶点
+                {
+                    if(!mark[i] && (cost[i] < m))
+                    {
+                        m = cost[i];
+                        k = i;
+                    }
+                }
+
+                end = (k == -1);
+
+                if(!end)
+                {
+                    ret.add(Edge<E>(adjVex[k], k, getEdge(adjVex[k], k)));  //将获得的顶点记录到输出队列
+                    mark[k] = true;     //标记检测状态
+
+                    aj = getAdjacent(k);
+
+                    for(int j = 0; j < aj->length(); j++)
+                    {
+                        if(!mark[(*aj)[j]] && (getEdge(k, (*aj)[j]) < cost[(*aj)[j]]))
+                        {
+                            cost[(*aj)[j]] = getEdge(k, (*aj)[j]);
+                            adjVex[(*aj)[j]] = k;
+                        }
+                    }
+
+                }
+            }
+
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "prim is for undireted grap");
+        }
+
+        if(ret.length() != (vCount() - 1))
+            THROW_EXCEPTION(InvalidOperationException, "No enough edge for prim");
+
+        return toArray(ret);
+    }
+
 
     SharePointer< Array<int> > BFS(int i)   //广度优先
     {

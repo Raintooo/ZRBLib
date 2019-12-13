@@ -16,6 +16,7 @@
 #include "Grap.h"
 #include "MatrixGrap.h"
 #include "ListGrap.h"
+#include "Queen.h"
 
 using namespace std;
 using namespace ZRBLib;
@@ -93,50 +94,28 @@ class A
 
 int main()
 {
-   MatrixGrap<9, char, int> g;
-   const char* VD = "ABCDEFGHI";
+   MatrixGrap<4, char, int> g;
 
-   for(int i = 0; i < strlen(VD); i++)
-       g.setVertex(i, VD[i]);
+   g.setEdge(0, 1, 1);
+   g.setEdge(1, 0, 1);
+
+   g.setEdge(0, 2, 3);
+   g.setEdge(2, 0, 3);
+
+   g.setEdge(1, 2, 1);
+   g.setEdge(2, 1, 1);
+
+   g.setEdge(1, 3, 4);
+   g.setEdge(3, 1, 4);
+
+   g.setEdge(2, 3, 5);
+   g.setEdge(3, 2, 5);
 
 
-   g.setEdge(0, 1, 0);
-   g.setEdge(1, 0, 0);
-
-   g.setEdge(0, 3, 0);
-   g.setEdge(3, 0, 0);
-
-   g.setEdge(0, 4, 0);
-   g.setEdge(4, 0, 0);
-
-   g.setEdge(1, 2, 0);
-   g.setEdge(2, 1, 0);
-
-   g.setEdge(1, 4, 0);
-   g.setEdge(4, 1, 0);
-
-   g.setEdge(3, 6, 0);
-   g.setEdge(6, 3, 0);
-
-   g.setEdge(4, 6, 0);
-   g.setEdge(6, 4, 0);
-
-   g.setEdge(2, 5, 0);
-   g.setEdge(5, 2, 0);
-
-   g.setEdge(6, 7, 0);
-   g.setEdge(7, 6, 0);
-
-   g.setEdge(7, 8, 0);
-   g.setEdge(8, 7, 0);
-
-   SharePointer<Array<int>> sa = g.DFS(0);
+   SharePointer<Array<Edge<int>>> sa = g.Prim(6666);
 
    for(int i = 0; i < sa->length(); i++)
-       cout<< (*sa)[i]<<" ";
-
-   cout<< endl;
-   DFS(g,0);
+       cout<< (*sa)[i].b<<" "<< (*sa)[i].e<< " "<< (*sa)[i].data<< endl;
 
 
     return 0;

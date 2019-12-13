@@ -24,6 +24,8 @@ void Exception::init(const char* message, const char* file, int line)
     {
         m_location = NULL;
     }
+
+    std::cout<< m_location<< std::endl;
 }
 
 Exception::Exception(const char* message)
