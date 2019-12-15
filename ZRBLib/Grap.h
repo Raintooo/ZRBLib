@@ -123,6 +123,83 @@ public:
         return ret;
     }
 
+    SharePointer< Array<int> > Dijkstra(int i, int j, const E& LIMIT)
+    {
+        LinkQueue<int> ret;
+
+        if((0 <= i) && (i < vCount()) && (0 <= j) && (j < vCount()))
+        {
+            DynamicArray<E> dist(vCount());
+            DynamicArray<int> path(vCount());
+            DynamicArray<bool> mark(vCount());
+
+            for(int w = 0; w < vCount(); w++)
+            {
+                mark[w] = false;
+                path[w] = -1;
+
+                dist[w] = isAdjacent(i, w) ? (path[w] = i, getEdge(i, w)) : LIMIT;
+            }
+
+            mark[i] = true;
+
+            for(int k = 0; k < vCount(); k++)
+            {
+                E m = LIMIT;
+                int u = -1;
+
+                for(int w = 0; w < vCount(); w++)
+                {
+                    if(!mark[w] && (dist[w] < m))
+                    {
+                        m = dist[w];
+                        u = w;
+                    }
+                }
+
+                if(u == -1)
+                    break;
+
+                mark[u] = true;
+
+                for(int w = 0; w < vCount(); w++)
+                {
+                    if(!mark[w] && isAdjacent(u, w) && (dist[u] + getEdge(u, w) < dist[w]))
+                    {
+                        dist[w] = dist[u] + getEdge(u, w);
+                        path[w] = u;
+                    }
+                }
+            }
+
+            LinkStack<int> s;
+
+            s.push(j);  //把最后的顶点先入栈
+
+            for(int k = path[j]; k != -1; k = path[k])
+            {
+                s.push(k);
+            }
+
+            while(s.size() > 0)
+            {
+                ret.add(s.top());
+                s.pop();
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "index <i,j> is invaild");
+        }
+
+        if(ret.length() < 2) // < 2 说明图 i -> j 不可达 最短路径至少2个顶点
+        {
+            THROW_EXCEPTION(ArithmeticException, "no path from i to j");
+        }
+
+        return toArray(ret);
+    }
+
     SharePointer<Array<Edge<E>>> getUndiretedEdge()
     {
         DynamicArray<Edge<E>>* ret = NULL;
@@ -373,6 +450,9 @@ void DFS(Grap<V, E>& g, int v)
 
     DFS(g, v, visted);
 }
+
+
+
 
 }
 

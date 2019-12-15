@@ -197,7 +197,7 @@ bool ListGrap<V, E>::setVertex(int i, const V& value)       //O(n)
 template <typename V, typename E>
 bool ListGrap<V, E>::isAdjacent(int i, int j)
 {
-    return (i >= 0) && (i < vCount()) && (j >= 0) && (j < vCount()) && (m_list.get(i)->edge.find(j) >= 0);
+    return (i >= 0) && (i < vCount()) && (j >= 0) && (j < vCount()) && (m_list.get(i)->edge.find(Edge<E>(i, j)) >= 0);
 }
 
 template <typename V, typename E>

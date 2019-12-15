@@ -92,9 +92,42 @@ int f(int x)
 class A
 {};
 
+template <typename T, typename E>
+Grap<T, E>& grap_2()
+{
+    static ListGrap<T, E> g(5);
+
+    g.setEdge(0, 1, 10);
+    g.setEdge(0, 3, 30);
+    g.setEdge(0, 4, 100);
+
+    g.setEdge(1, 2, 50);
+
+    g.setEdge(2, 4, 10);
+
+    g.setEdge(3, 2, 20);
+    g.setEdge(3, 4, 60);
+
+    return g;
+}
+
 int main()
 {
-   MatrixGrap<9, char, int> g;
+
+    Grap<int, int>& g = grap_2<int, int>();
+
+   SharePointer<Array<int>> sa = g.Dijkstra(0, 4, 65535);
+
+   for(int i = 0; i < sa->length(); i++)
+       cout<< (*sa)[i]<< endl;
+
+}
+
+
+template <typename T, typename E>
+Grap<T, E>& grap_1()
+{
+   static MatrixGrap<9, T, E> g;
 
    g.setEdge(0, 1, 10);
    g.setEdge(1, 0, 10);
@@ -141,17 +174,7 @@ int main()
    g.setEdge(5, 6, 17);
    g.setEdge(6, 5, 17);
 
-
-   SharePointer<Array<Edge<int>>> sa = g.kruskal();
-
-   for(int i = 0; i < sa->length(); i++)
-       cout<< (*sa)[i].b<<" "<< (*sa)[i].e<< " "<< (*sa)[i].data<< endl;
-
-
-   int a[] = {5,6,4,1,34,12,4,9,2,33,10,7};
-   Sort::Shell(a, sizeof(a)/sizeof(int));
-    return 0;
-
+   return g;
 }
 
 
