@@ -7,6 +7,7 @@
 #include "DynamicArray.h"
 #include "LinkQueue.h"
 #include "LinkStack.h"
+#include "Sort.h"
 
 namespace ZRBLib
 {
@@ -39,6 +40,14 @@ struct Edge : public Object
     bool operator !=(const Edge<E>& obj)
     {
         return !(*this == obj);
+    }
+    bool operator >(const Edge<E>& obj)
+    {
+        return (this->data > obj.data);
+    }
+    bool operator <(const Edge<E>& obj)
+    {
+        return (this->data < obj.data);
     }
 };
 
@@ -87,6 +96,14 @@ public:
         return OD(i) + ID(i);
     }
 
+    int find(Array<int>& p, int val)
+    {
+        while(p[val] != -1)
+            val = p[val];
+
+        return val;
+    }
+
     bool asUndireted()  //判断是否可作为无向图
     {
         bool ret = true;
@@ -104,6 +121,62 @@ public:
 
 
         return ret;
+    }
+
+    SharePointer<Array<Edge<E>>> getUndiretedEdge()
+    {
+        DynamicArray<Edge<E>>* ret = NULL;
+
+        if(asUndireted())
+        {
+            LinkQueue<Edge<E>> queue;
+            for(int i = 0; i < vCount(); i++)
+            {
+                for(int j = i; j < vCount(); j++)   //j = i : 只判断单向边
+                {
+                    if(isAdjacent(i, j))
+                    {
+                        queue.add(Edge<E>(i, j, getEdge(i, j)));
+                    }
+                }
+            }
+            ret = toArray(queue);
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidOperationException, "this function is for undirtected");
+        }
+
+        return ret;
+    }
+
+    SharePointer< Array<Edge<E>> > kruskal()
+    {
+        LinkQueue<Edge<E>> ret;
+        DynamicArray<int> p(vCount());
+        SharePointer<Array<Edge<E>>> edges = getUndiretedEdge();
+
+        for(int i = 0; i < p.length(); i++)
+            p[i] = -1;
+
+        Sort::Shell(*edges);
+
+        for(int j = 0; (j < edges->length()) && (ret.length() < (vCount()-1)); j++)
+        {
+            int b = find(p, (*edges)[j].b);
+            int e = find(p, (*edges)[j].e);
+
+            if(b != e)
+            {
+                ret.add((*edges)[j]);
+                p[e] = b;
+            }
+        }
+
+        if(ret.length() != (vCount() -1))
+            THROW_EXCEPTION(InvalidOperationException, "no enough edges for kruskal");
+
+        return toArray(ret);
     }
 
     SharePointer< Array<Edge<E>> > Prim(const E& LIMIT)

@@ -19,6 +19,11 @@ public:
 
     T& operator [](int inedex);
     T operator [](int index) const;
+
+    virtual T* array()
+    {
+        return m_array;
+    }
 };
 
 template <typename T>

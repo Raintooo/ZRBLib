@@ -2,6 +2,7 @@
 #define SORT_H
 
 #include "Object.h"
+#include "Array.h"
 
 namespace ZRBLib
 {
@@ -40,6 +41,9 @@ public:
 
     template <typename T>
     static void Shell(T array[], int len, bool min2max = true);
+
+    template <typename T>
+    static void Shell(Array<T>& array, bool min2max = true);
 
     template <typename T>
     static void Merge(T array[], int len, bool min2max = true);
@@ -117,6 +121,12 @@ void Sort::Bouble(T array[], int len, bool min2max)
             }
         }
     }
+}
+
+template < typename T >
+void Sort::Shell(Array<T>& array, bool min2max)
+{
+    Shell(array.array(), array.length(), min2max);
 }
 
 template <typename T>
