@@ -133,12 +133,12 @@ public:
             DynamicArray<int> path(vCount());
             DynamicArray<bool> mark(vCount());
 
-            for(int w = 0; w < vCount(); w++)
+            for(int w = 0; w < vCount(); w++)   //init
             {
                 mark[w] = false;
                 path[w] = -1;
 
-                dist[w] = isAdjacent(i, w) ? (path[w] = i, getEdge(i, w)) : LIMIT;
+                dist[w] = isAdjacent(i, w) ? (path[w] = i, getEdge(i, w)) : LIMIT;  //把初始顶点的邻接顶点加入到dist 数组 并加入对应权值 更新 path 数组
             }
 
             mark[i] = true;
@@ -148,7 +148,7 @@ public:
                 E m = LIMIT;
                 int u = -1;
 
-                for(int w = 0; w < vCount(); w++)
+                for(int w = 0; w < vCount(); w++)   //选取最小权值的顶点
                 {
                     if(!mark[w] && (dist[w] < m))
                     {
@@ -164,7 +164,7 @@ public:
 
                 for(int w = 0; w < vCount(); w++)
                 {
-                    if(!mark[w] && isAdjacent(u, w) && (dist[u] + getEdge(u, w) < dist[w]))
+                    if(!mark[w] && isAdjacent(u, w) && (dist[u] + getEdge(u, w) < dist[w])) //将选取的顶点加上 下一顶点 与原路径权值比较 取最小权值 并刷新path 和 dist
                     {
                         dist[w] = dist[u] + getEdge(u, w);
                         path[w] = u;
