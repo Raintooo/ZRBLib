@@ -89,34 +89,30 @@ int f(int x)
 }
 
 
-class A
-{};
 
 template <typename T, typename E>
 Grap<T, E>& grap_2()
 {
-    static ListGrap<T, E> g(5);
+    static ListGrap<T, E> g(3);
 
-    g.setEdge(0, 1, 10);
-    g.setEdge(0, 3, 30);
-    g.setEdge(0, 4, 100);
+    g.setEdge(0, 1, 4);
+    g.setEdge(0, 2, 11);
 
-    g.setEdge(1, 2, 50);
+    g.setEdge(1, 2, 2);
+    g.setEdge(1, 0, 6);
 
-    g.setEdge(2, 4, 10);
-
-    g.setEdge(3, 2, 20);
-    g.setEdge(3, 4, 60);
+    g.setEdge(2, 0, 3);
 
     return g;
 }
+
 
 int main()
 {
 
     Grap<int, int>& g = grap_2<int, int>();
 
-   SharePointer<Array<int>> sa = g.Dijkstra(0, 4, 65535);
+   SharePointer<Array<int>> sa = g.floyd(0, 2, 65535);
 
    for(int i = 0; i < sa->length(); i++)
        cout<< (*sa)[i]<< endl;

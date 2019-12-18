@@ -200,6 +200,70 @@ public:
         return toArray(ret);
     }
 
+    SharePointer<Array<int>> floyd(int x, int y, const E& LIMIT)
+    {
+        LinkQueue<int> ret;
+
+        if((0 <= x) && (x < vCount()) && (0 <= y) && (y < vCount()))
+        {
+            DynamicArray< DynamicArray<E> > dst(vCount());
+            DynamicArray< DynamicArray<int> > path(vCount());
+
+            for(int k = 0; k < vCount(); k++)
+            {
+                dst[k].resize(vCount());
+                path[k].resize(vCount());
+            }
+
+            for(int i = 0; i < vCount(); i++)
+            {
+                for(int j = 0; j < vCount(); j++)
+                {
+                    path[i][j] = -1;
+                    dst[i][j] = isAdjacent(i, j) ? (path[i][j] = j, getEdge(i, j)) : LIMIT;
+                }
+            }
+
+            for(int k = 0; k < vCount(); k++)
+            {
+                for(int i = 0; i < vCount(); i++)
+                {
+                    for(int j = 0; j < vCount(); j++)
+                    {
+                        if(dst[i][k] + dst[k][j] < dst[i][j])
+                        {
+                            dst[i][j] = dst[i][k] + dst[k][j];
+                            path[i][j] = path[i][k];
+                        }
+                    }
+                }
+
+            }
+
+            while((x != -1) && (x != y))
+            {
+                ret.add(x);
+                x = path[x][y];
+            }
+            if(x != -1)
+                ret.add(x);
+
+
+            if(ret.length() < 2) // < 2 说明图 i -> j 不可达 最短路径至少2个顶点
+            {
+                THROW_EXCEPTION(ArithmeticException, "no path from x to y");
+            }
+        }
+        else
+        {
+            THROW_EXCEPTION(InvalidParameterException, "index <i,j> is invaild");
+        }
+
+
+        return toArray(ret);
+    }
+
+
     SharePointer<Array<Edge<E>>> getUndiretedEdge()
     {
         DynamicArray<Edge<E>>* ret = NULL;
