@@ -21,74 +21,10 @@
 using namespace std;
 using namespace ZRBLib;
 
-int* get_pmt(const char* p)
-{
-    int len = strlen(p);
-    int* ret = static_cast<int*>(malloc(sizeof(int) * len));
-
-    if(ret != NULL)
-    {
-        int ll = 0;              //这里ll值是前后缀交集的最大长度
-        ret[0] = 0;
-
-        for(int i = 1; i < len; i++)
-        {
-            while((ll > 0) && (p[ll] != p[i]))
-            {
-                ll = ret[ll-1];         //这里匹配不上就找 当前匹配时的重叠部分
-            }
-
-            if(p[ll] == p[i])
-            {
-                ll++;
-            }
-            ret[i] = ll;
-        }
-    }
-    return ret;
-}
-
-int kmp(const char* s, const char* p)
-{
-    int ret = -1;
-    int sl = strlen(s);
-    int pl = strlen(p);
-    int* pmt = get_pmt(p);
-
-
-    if((pmt != NULL) && (pl > 0) && (pl <= sl))
-    {
-        for(int i = 0, j = 0; i < sl; i++)
-        {
-            while((j > 0) && (p[j] != s[i]))
-            {
-                j = j - (j - pmt[j-1]);//pmt[j-1];
-            }
-            if(p[j] == s[i])
-            {
-                j++;
-            }
-            if(j == pl)
-            {
-                ret = i + 1 - pl;
-                break;
-            }
-
-        }
-
-    }
-
-    free(pmt);
-
-    return ret;
-}
-
 int f(int x)
 {
     return ((x>0)?x*f(x-1):2);
 }
-
-
 
 template <typename T, typename E>
 Grap<T, E>& grap_2()
@@ -106,16 +42,20 @@ Grap<T, E>& grap_2()
     return g;
 }
 
+void Solution(int* array, int len);
 
 int main()
 {
 
-    Grap<int, int>& g = grap_2<int, int>();
+//    Grap<int, int>& g = grap_2<int, int>();
 
-   SharePointer<Array<int>> sa = g.floyd(0, 2, 65535);
+//   SharePointer<Array<int>> sa = g.floyd(0, 2, 65535);
 
-   for(int i = 0; i < sa->length(); i++)
-       cout<< (*sa)[i]<< endl;
+//   for(int i = 0; i < sa->length(); i++)
+//       cout<< (*sa)[i]<< endl;
+//3, 18, 7, 14, 10, 12, 23, 41, 16, 24
+    int a[] = {1, 3, 5, 4};
+    Solution(a, sizeof(a)/sizeof(int));
 
 }
 
@@ -173,6 +113,154 @@ Grap<T, E>& grap_1()
    return g;
 }
 
+
+int search_max_path(Grap<int, int>& g, int v, Array<int>& count, Array< LinkList<int>* >& path, Array<bool>& mark)
+{
+    int ret = 0;
+    SharePointer< Array<int> > aj = g.getAdjacent(v);
+
+    for(int i = 0; i < aj->length(); i++)
+    {
+        int num = 0;
+
+        if(!mark[(*aj)[i]])
+        {
+            num = search_max_path(g, (*aj)[i], count, path, mark);
+        }
+        else
+        {
+            num = count[(*aj)[i]];
+        }
+
+        if(ret < num)
+        {
+            ret = num;
+        }
+    }
+
+     for(int i = 0; i < aj->length(); i++)  //可能存在多条长度相同的 不下降序列 用链表方式存储
+     {
+         if(ret == count[(*aj)[i]])
+         {
+             path[v]->insert((*aj)[i]);
+         }
+     }
+
+    ret++;
+    count[v] = ret;
+    mark[v] = true;
+
+    return ret;
+}
+
+
+SharePointer< Grap<int, int> > Create_Grap(int* array, int len)
+{
+    ListGrap<int, int>* ret = new ListGrap<int, int>(len);
+
+    for(int i = 0; i < len; i++)
+    {
+        ret->setVertex(i, array[i]);
+    }
+    for(int i = 0; i < len; i++)
+    {
+        for(int j = i+1; j < len; j++)
+        {
+            if(array[i] <= array[j])
+                ret->setEdge(i, j, 1);
+        }
+    }
+    return ret;
+}
+
+void init_array(Array<int>& count, Array< LinkList<int>* >& path, Array<bool>& mark)
+{
+    for(int i = 0; i < count.length(); i++)
+    {
+        count[i] = 0;
+    }
+    for(int i = 0; i < path.length(); i++)
+    {
+        path[i] = new LinkList<int>();
+    }
+    for(int i = 0; i < mark.length(); i++)
+    {
+        mark[i] = false;
+    }
+}
+
+void search_max_path(Grap<int, int>& g, Array<int>& count, Array< LinkList<int>* >& path, Array<bool>& mark)
+{
+    for(int i = 0; i < g.vCount(); i++)
+    {
+        if(!mark[i])
+            search_max_path(g, i, count, path, mark);
+    }
+}
+
+/*
+  用回溯方式遍历 不下降序列
+*/
+void print_path(Grap<int, int> &g, int v, Array< LinkList<int>* > &path, LinkList<int>& cp)
+{
+    cp.insert(v);
+
+    if(path[v]->length() > 0)
+    {
+        for(path[v]->move(0); !path[v]->end(); path[v]->next())
+        {
+            print_path(g, path[v]->current(), path, cp);
+        }
+    }
+    else
+    {
+        for(cp.move(0); !cp.end(); cp.next())
+        {
+            cout<< g.getVertex(cp.current())<< "-";
+        }
+        cout<< endl;
+    }
+
+    cp.remove(cp.length()-1);   //找到一条不下降序列后 将最后一个去除 回溯再次遍历是否还有长度相同不下降序列
+}
+
+void print_max_path(Grap<int, int> &g, Array<int> &count, Array< LinkList<int>* > &path)
+{
+    int max = 0;
+    LinkList<int> cp;
+
+    for(int i = 0; i < count.length(); i++)
+    {
+        if(max < count[i])
+            max = count[i];
+    }
+
+    for(int j = 0; j < count.length(); j++)
+    {
+        if(max == count[j])
+        {
+            print_path(g, j, path, cp);
+        }
+    }
+}
+
+void Solution(int* array, int len)
+{
+    DynamicArray<int> count(len);
+    DynamicArray< LinkList<int>* > path(len);
+    DynamicArray<bool> mark(len);
+
+    SharePointer< Grap<int, int> > g;
+
+    g = Create_Grap(array, len);
+
+    init_array(count, path, mark);
+
+    search_max_path(*g, count, path, mark);
+
+    print_max_path(*g, count, path);
+
+}
 
 
 
