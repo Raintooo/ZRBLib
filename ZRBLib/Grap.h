@@ -233,7 +233,7 @@ public:
                         if(dst[i][k] + dst[k][j] < dst[i][j])
                         {
                             dst[i][j] = dst[i][k] + dst[k][j];
-                            path[i][j] = path[i][k];
+                            path[i][j] = path[i][k];            //path[i][k] 记录 i -> j 最小路径的第j个顶点
                         }
                     }
                 }
